@@ -100,6 +100,8 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+*/bin/
+*/obj/
 # Chutzpah Test files
 _Chutzpah*
 
@@ -478,3 +480,32 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
+Micro.Services.CouponAPI/obj/rider.project.restore.info
+Micro.Services.CouponAPI/obj/project.packagespec.json
+Micro.Services.CouponAPI/obj/project.nuget.cache
+Micro.Services.CouponAPI/obj/project.assets.json
+Micro.Services.CouponAPI/obj/Micro.Services.CouponAPI.csproj.nuget.g.targets
+Micro.Services.CouponAPI/obj/Micro.Services.CouponAPI.csproj.nuget.g.props
+Micro.Services.CouponAPI/obj/Micro.Services.CouponAPI.csproj.nuget.dgspec.json
+Micro.Services.CouponAPI/obj/Debug/net7.0/staticwebassets/msbuild.buildTransitive.Micro.Services.CouponAPI.props
+Micro.Services.CouponAPI/obj/Debug/net7.0/staticwebassets/msbuild.buildMultiTargeting.Micro.Services.CouponAPI.props
+Micro.Services.CouponAPI/obj/Debug/net7.0/staticwebassets/msbuild.build.Micro.Services.CouponAPI.props
+Micro.Services.CouponAPI/obj/Debug/net7.0/staticwebassets.build.json
+Micro.Services.CouponAPI/obj/Debug/net7.0/refint/Micro.Services.CouponAPI.dll
+Micro.Services.CouponAPI/obj/Debug/net7.0/ref/Micro.Services.CouponAPI.dll
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.pdb
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.MvcApplicationPartsAssemblyInfo.cs
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.MvcApplicationPartsAssemblyInfo.cache
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.GlobalUsings.g.cs
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.genruntimeconfig.cache
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.GeneratedMSBuildEditorConfig.editorconfig
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.dll
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.csproj.FileListAbsolute.txt
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.csproj.CoreCompileInputs.cache
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.csproj.CopyComplete
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.csproj.AssemblyReference.cache
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.assets.cache
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.AssemblyInfoInputs.cache
+Micro.Services.CouponAPI/obj/Debug/net7.0/Micro.Services.CouponAPI.AssemblyInfo.cs
+Micro.Services.CouponAPI/obj/Debug/net7.0/apphost.exe
+Micro.Services.CouponAPI/obj/Debug/net7.0/.NETCoreApp,Version=v7.0.AssemblyAttributes.cs
