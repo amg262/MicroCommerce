@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Micro.Services.CouponAPI.Data;
 using Micro.Services.CouponAPI.Models;
+using Micro.Services.CouponAPI.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Micro.Services.CouponAPI.Controllers;
@@ -13,42 +14,46 @@ namespace Micro.Services.CouponAPI.Controllers;
 public class CouponAPIController : ControllerBase
 {
 	private readonly AppDbContext _db;
+	private ResponseDto _response;
 
 	public CouponAPIController(AppDbContext db)
 	{
 		_db = db;
+		_response = new ResponseDto();
 	}
 
 	[HttpGet]
-	public object Get()
+	public ResponseDto Get()
 	{
 		try
 		{
 			IEnumerable<Coupon> coupons = _db.Coupons.ToList();
-			return coupons;
+			_response.Result = coupons;
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine($"Error occurred while fetching coupons: {e.Message}");
+			_response.IsSuccess = false;
+			_response.DisplayMessage = e.Message;
 		}
 
-		return null;
+		return _response;
 	}
-	
+
 	[HttpGet]
 	[Route("{id:int}")]
-	public object Get(int id)
+	public ResponseDto Get(int id)
 	{
 		try
 		{
-			Coupon coupons = _db.Coupons.First(i=>i.CouponId == id);
-			return coupons;
+			Coupon coupon = _db.Coupons.First(i => i.CouponId == id);
+			_response.Result = coupon;
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine($"Error occurred while fetching coupons: {e.Message}");
+			_response.IsSuccess = false;
+			_response.DisplayMessage = e.Message;
 		}
 
-		return null;
+		return _response;
 	}
 }
