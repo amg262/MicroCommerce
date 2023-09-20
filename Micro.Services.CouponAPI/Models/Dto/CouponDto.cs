@@ -1,6 +1,6 @@
 ﻿namespace Micro.Services.CouponAPI.Models.Dto;
 
-public class CouponDto
+public record CouponDto
 {
 	public int CouponId { get; set; }
 	public string CouponCode { get; set; }

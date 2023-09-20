@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Text;
 using Newtonsoft.Json;
 using Micro.Web.Models;
@@ -22,7 +23,10 @@ public class BaseService : IBaseService
 		{
 			HttpClient client = _clientFactory.CreateClient("MicroAPI");
 			HttpRequestMessage message = new();
+			
+			
 			message.Headers.Add("Accept", "application/json");
+			Console.WriteLine($"Sending request to {requestDto.Url} with method {message.Method}");
 
 			message.RequestUri = new Uri(requestDto.Url);
 			if (requestDto.Data != null)
@@ -61,13 +65,13 @@ public class BaseService : IBaseService
 		}
 		catch (Exception e)
 		{
+			Console.WriteLine(e.ToString());
+			if (e.InnerException != null)
+			{
+				Console.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
+			}
 			ResponseDto dto = new() {DisplayMessage = e.Message.ToString(), IsSuccess = false};
 			return dto;
 		}
-	}
-
-	public Task<ResponseDto?> SendAsync<T>(RequestDto requestDto)
-	{
-		throw new NotImplementedException();
 	}
 }

@@ -43,10 +43,6 @@
       <Content Include="obj\Debug\net7.0\staticwebassets\msbuild.build.Micro.Services.CouponAPI.props" />
       <Content Include="obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.Micro.Services.CouponAPI.props" />
       <Content Include="obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.Micro.Services.CouponAPI.props" />
-      <Content Include="obj\Micro.Services.CouponAPI.csproj.EntityFrameworkCore.targets" />
-      <Content Include="obj\Micro.Services.CouponAPI.csproj.nuget.dgspec.json" />
-      <Content Include="obj\Micro.Services.CouponAPI.csproj.nuget.g.props" />
-      <Content Include="obj\Micro.Services.CouponAPI.csproj.nuget.g.targets" />
       <Content Include="obj\project.assets.json" />
       <Content Include="obj\project.nuget.cache" />
       <Content Include="obj\project.packagespec.json" />

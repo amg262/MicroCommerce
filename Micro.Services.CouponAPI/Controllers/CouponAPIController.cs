@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Micro.Services.CouponAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/coupon")]
 [ApiController]
 // ControllerBase is a controller without view support
 public class CouponAPIController : ControllerBase
@@ -66,7 +66,7 @@ public class CouponAPIController : ControllerBase
 	{
 		try
 		{
-			Coupon coupon = _db.Coupons.First(i => i.CouponCode.ToLower() == code.ToLower());
+			Coupon coupon = _db.Coupons.First(i => string.Equals(i.CouponCode, code, StringComparison.CurrentCultureIgnoreCase));
 			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
 		}
 		catch (Exception e)
