@@ -13,7 +13,7 @@ public class CouponController : Controller
 	{
 		_couponService = couponService;
 	}
-	
+
 	public IActionResult Index()
 	{
 		return View();
@@ -32,5 +32,27 @@ public class CouponController : Controller
 		}
 
 		return View(coupons);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> CouponCreate()
+	{
+		return View();
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> CouponCreate(CouponDto couponDto)
+	{
+		if (ModelState.IsValid)
+		{
+			ResponseDto? responseDto = await _couponService.CreateCouponAsync(couponDto);
+
+			if (responseDto != null && responseDto.IsSuccess)
+			{
+				return RedirectToAction(nameof(CouponIndex));
+			}
+		}
+
+		return View(couponDto);
 	}
 }
