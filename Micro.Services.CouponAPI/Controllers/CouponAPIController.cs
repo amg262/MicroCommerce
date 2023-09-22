@@ -66,7 +66,8 @@ public class CouponAPIController : ControllerBase
 	{
 		try
 		{
-			Coupon coupon = _db.Coupons.First(i => string.Equals(i.CouponCode, code, StringComparison.CurrentCultureIgnoreCase));
+			Coupon coupon = _db.Coupons.First(i =>
+				string.Equals(i.CouponCode, code, StringComparison.CurrentCultureIgnoreCase));
 			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
 		}
 		catch (Exception e)
@@ -97,7 +98,7 @@ public class CouponAPIController : ControllerBase
 
 		return _response;
 	}
-	
+
 	[HttpPut]
 	public ResponseDto Put([FromBody] CouponDto couponDto)
 	{
@@ -117,8 +118,9 @@ public class CouponAPIController : ControllerBase
 
 		return _response;
 	}
-	
+
 	[HttpDelete]
+	[Route("{id:int}")]
 	public ResponseDto Delete(int id)
 	{
 		try
