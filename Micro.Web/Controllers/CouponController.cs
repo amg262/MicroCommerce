@@ -32,7 +32,7 @@ public class CouponController : Controller
 		}
 		else
 		{
-			TempData["error"] = response?.DisplayMessage;
+			TempData["error"] = response?.Message;
 		}
 
 		return View(coupons);
@@ -58,7 +58,7 @@ public class CouponController : Controller
 			}
 			else
 			{
-				TempData["error"] = response?.DisplayMessage;
+				TempData["error"] = response?.Message;
 			}
 		}
 
@@ -77,7 +77,7 @@ public class CouponController : Controller
 		}
 		else
 		{
-			TempData["error"] = response?.DisplayMessage;
+			TempData["error"] = response?.Message;
 		}
 
 		return NotFound();
@@ -95,7 +95,7 @@ public class CouponController : Controller
 		}
 		else
 		{
-			TempData["error"] = response?.DisplayMessage;
+			TempData["error"] = response?.Message;
 		}
 
 		return View(couponDto);

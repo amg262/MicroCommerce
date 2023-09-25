@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.Services.CouponAPI", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.Web", "Micro.Web\Micro.Web.csproj", "{85F9E818-992C-43D8-A3E7-5A19E9B1B13C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.Services.AuthAPI", "Micro.Services.AuthAPI\Micro.Services.AuthAPI.csproj", "{97AFD7B6-1701-4565-B147-1F85C14FC641}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F30856D9-F904-4616-9942-B68F663D7E84} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
 		{85F9E818-992C-43D8-A3E7-5A19E9B1B13C} = {0EB24790-8376-4936-AFEB-690D6E903661}
+		{97AFD7B6-1701-4565-B147-1F85C14FC641} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F30856D9-F904-4616-9942-B68F663D7E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -30,5 +33,9 @@ Global
 		{85F9E818-992C-43D8-A3E7-5A19E9B1B13C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85F9E818-992C-43D8-A3E7-5A19E9B1B13C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85F9E818-992C-43D8-A3E7-5A19E9B1B13C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97AFD7B6-1701-4565-B147-1F85C14FC641}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97AFD7B6-1701-4565-B147-1F85C14FC641}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97AFD7B6-1701-4565-B147-1F85C14FC641}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97AFD7B6-1701-4565-B147-1F85C14FC641}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

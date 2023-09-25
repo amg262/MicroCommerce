@@ -50,13 +50,13 @@ public class BaseService : IBaseService
 			switch (apiResponse.StatusCode)
 			{
 				case HttpStatusCode.NotFound:
-					return new ResponseDto {DisplayMessage = "Not Found", IsSuccess = false};
+					return new ResponseDto {Message = "Not Found", IsSuccess = false};
 				case HttpStatusCode.Forbidden:
-					return new ResponseDto {DisplayMessage = "Forbidden Access", IsSuccess = false};
+					return new ResponseDto {Message = "Forbidden Access", IsSuccess = false};
 				case HttpStatusCode.Unauthorized:
-					return new ResponseDto {DisplayMessage = "Unauthorized", IsSuccess = false};
+					return new ResponseDto {Message = "Unauthorized", IsSuccess = false};
 				case HttpStatusCode.InternalServerError:
-					return new ResponseDto {DisplayMessage = "Internal Server Error", IsSuccess = false};
+					return new ResponseDto {Message = "Internal Server Error", IsSuccess = false};
 				default:
 					var apiContent = await apiResponse.Content.ReadAsStringAsync();
 					var apiResponseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
@@ -70,7 +70,7 @@ public class BaseService : IBaseService
 			{
 				Console.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
 			}
-			ResponseDto dto = new() {DisplayMessage = e.Message.ToString(), IsSuccess = false};
+			ResponseDto dto = new() {Message = e.Message.ToString(), IsSuccess = false};
 			return dto;
 		}
 	}

@@ -36,7 +36,7 @@ public class CouponAPIController : ControllerBase
 		catch (Exception e)
 		{
 			_response.IsSuccess = false;
-			_response.DisplayMessage = e.Message;
+			_response.Message = e.Message;
 		}
 
 		return _response;
@@ -54,7 +54,7 @@ public class CouponAPIController : ControllerBase
 		catch (Exception e)
 		{
 			_response.IsSuccess = false;
-			_response.DisplayMessage = e.Message;
+			_response.Message = e.Message;
 		}
 
 		return _response;
@@ -73,7 +73,7 @@ public class CouponAPIController : ControllerBase
 		catch (Exception e)
 		{
 			_response.IsSuccess = false;
-			_response.DisplayMessage = e.Message;
+			_response.Message = e.Message;
 		}
 
 		return _response;
@@ -93,7 +93,7 @@ public class CouponAPIController : ControllerBase
 		catch (Exception e)
 		{
 			_response.IsSuccess = false;
-			_response.DisplayMessage = e.Message;
+			_response.Message = e.Message;
 		}
 
 		return _response;
@@ -113,7 +113,7 @@ public class CouponAPIController : ControllerBase
 		catch (Exception e)
 		{
 			_response.IsSuccess = false;
-			_response.DisplayMessage = e.Message;
+			_response.Message = e.Message;
 		}
 
 		return _response;
@@ -134,7 +134,7 @@ public class CouponAPIController : ControllerBase
 		catch (Exception e)
 		{
 			_response.IsSuccess = false;
-			_response.DisplayMessage = e.Message;
+			_response.Message = e.Message;
 		}
 
 		return _response;
