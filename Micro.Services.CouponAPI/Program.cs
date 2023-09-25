@@ -50,3 +50,5 @@ void ApplyMigration()
 		_db.Database.Migrate();
 	}
 }
+
+ApplyMigration();
