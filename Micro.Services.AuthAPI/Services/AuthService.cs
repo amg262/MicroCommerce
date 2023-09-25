@@ -75,8 +75,8 @@ public class AuthService : IAuthService
 		{
 			return new LoginResponseDto() {User = null, Token = ""};
 		}
-		
-		var token =  _jwtTokenGenerator.GenerateToken(user);
+
+		var token = _jwtTokenGenerator.GenerateToken(user);
 
 		UserDto userDto = new()
 		{
@@ -93,5 +93,23 @@ public class AuthService : IAuthService
 		};
 
 		return loginResponseDto;
+	}
+
+	public async Task<bool> AssignRole(string email, string roleName)
+	{
+		var user = _db.ApplicationUsers.FirstOrDefault(u => string.Equals(u.Email.ToUpper(), email.ToUpper()));
+
+		if (user != null)
+		{
+			if (!_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
+			{
+				_roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
+			}
+
+			await _userManager.AddToRoleAsync(user, roleName);
+			return true;
+		}
+
+		return false;
 	}
 }

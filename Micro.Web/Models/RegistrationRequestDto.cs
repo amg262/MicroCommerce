@@ -1,4 +1,4 @@
-﻿namespace Micro.Services.AuthAPI.Models.Dto;
+﻿namespace Micro.Web.Models;
 
 public class RegistrationRequestDto
 {
@@ -6,6 +6,5 @@ public class RegistrationRequestDto
 	public string Name { get; set; }
 	public string PhoneNumber { get; set; }
 	public string Password { get; set; }
-
 	public string? Role { get; set; }
 }

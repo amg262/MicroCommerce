@@ -53,5 +53,20 @@ namespace Micro.Services.AuthAPI.Controllers
 			_response.Result = loginResponse;
 			return Ok(_response);
 		}
+
+		[HttpPost("AssignRole")]
+		public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDto model)
+		{
+			var assignRoleSuccess = await _authService.AssignRole(model.Email, model.Role.ToUpper());
+
+			if (!assignRoleSuccess)
+			{
+				_response.IsSuccess = false;
+				_response.Message = "Username or password is incorrect.";
+				return BadRequest(_response);
+			}
+			
+			return Ok(_response);
+		}
 	}
 }
