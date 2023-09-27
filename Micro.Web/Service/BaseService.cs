@@ -23,8 +23,8 @@ public class BaseService : IBaseService
 		{
 			HttpClient client = _clientFactory.CreateClient("MicroAPI");
 			HttpRequestMessage message = new();
-			
-			
+
+
 			message.Headers.Add("Accept", "application/json");
 			Console.WriteLine($"Sending request to {requestDto.Url} with method {message.Method}");
 
@@ -70,6 +70,7 @@ public class BaseService : IBaseService
 			{
 				Console.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
 			}
+
 			ResponseDto dto = new() {Message = e.Message.ToString(), IsSuccess = false};
 			return dto;
 		}
