@@ -47,10 +47,9 @@ public class AuthController : Controller
 		}
 		else
 		{
-			ModelState.AddModelError("Custom Error", responseDto.Message);
+			TempData["error"] = responseDto.Message;
+			return View(dto);
 		}
-
-		return View(dto);
 	}
 
 	[HttpGet]
@@ -88,6 +87,10 @@ public class AuthController : Controller
 				return RedirectToAction(nameof(Login));
 			}
 		}
+		else
+		{
+			TempData["error"] = result.Message;
+		}
 
 		var roleList = new List<SelectListItem>
 		{
@@ -120,12 +123,12 @@ public class AuthController : Controller
 			jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Name).Value));
 		identity.AddClaim(new Claim(ClaimTypes.Name,
 			jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email).Value));
-		
+
 		// Add the role claim to the identity object so that we can use it in the Authorize attribute
 		identity.AddClaim(new Claim(ClaimTypes.Role,
 			jwt.Claims.FirstOrDefault(u => u.Type == "role").Value));
-		
-		
+
+
 		var principal = new ClaimsPrincipal(identity);
 
 		await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
