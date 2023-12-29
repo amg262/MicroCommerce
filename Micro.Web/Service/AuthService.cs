@@ -30,7 +30,7 @@ public class AuthService : IAuthService
 			ApiType = ApiType.POST,
 			Data = loginRequestDto,
 			Url = SD.AuthAPIBase + "/api/auth/login",
-		});
+		}, withBearer: false);
 	}
 
 	public async Task<ResponseDto?> AssignRoleAsync(RegistrationRequestDto registrationRequestDto)
@@ -40,6 +40,6 @@ public class AuthService : IAuthService
 			ApiType = ApiType.POST,
 			Data = registrationRequestDto,
 			Url = SD.AuthAPIBase + "/api/auth/AssignRole",
-		});
+		}, withBearer: false);
 	}
 }

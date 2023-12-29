@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Micro.Services.CouponAPI.Data;
 using Micro.Services.CouponAPI.Models;
 using Micro.Services.CouponAPI.Models.Dto;
+using Micro.Services.CouponAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -82,6 +80,7 @@ public class CouponAPIController : ControllerBase
 	}
 
 	[HttpPost]
+	[Authorize(Roles = SD.RoleAdmin)]
 	public ResponseDto Post([FromBody] CouponDto couponDto)
 	{
 		try
@@ -102,6 +101,7 @@ public class CouponAPIController : ControllerBase
 	}
 
 	[HttpPut]
+	[Authorize(Roles = SD.RoleAdmin)]
 	public ResponseDto Put([FromBody] CouponDto couponDto)
 	{
 		try
@@ -123,6 +123,7 @@ public class CouponAPIController : ControllerBase
 
 	[HttpDelete]
 	[Route("{id:int}")]
+	[Authorize(Roles = SD.RoleAdmin)]
 	public ResponseDto Delete(int id)
 	{
 		try

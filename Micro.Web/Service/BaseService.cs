@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
 using Micro.Web.Models;
@@ -11,13 +12,15 @@ namespace Micro.Web.Service;
 public class BaseService : IBaseService
 {
 	private readonly IHttpClientFactory _clientFactory;
+	private readonly ITokenProvider _tokenProvider;
 
-	public BaseService(IHttpClientFactory clientFactory)
+	public BaseService(IHttpClientFactory clientFactory, ITokenProvider tokenProvider)
 	{
 		_clientFactory = clientFactory;
+		_tokenProvider = tokenProvider;
 	}
 
-	public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
+	public async Task<ResponseDto?> SendAsync(RequestDto requestDto, bool withBearer = true)
 	{
 		try
 		{
@@ -26,7 +29,13 @@ public class BaseService : IBaseService
 
 
 			message.Headers.Add("Accept", "application/json");
-			Console.WriteLine($"Sending request to {requestDto.Url} with method {message.Method}");
+			// token
+			if (withBearer)
+			{
+				// 
+				var token = _tokenProvider.GetToken();
+				message.Headers.Add("Authorization", $"Bearer {token}");
+			}
 
 			message.RequestUri = new Uri(requestDto.Url);
 			if (requestDto.Data != null)

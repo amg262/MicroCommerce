@@ -5,6 +5,7 @@ using System.Text.Json;
 using AutoMapper;
 using Micro.Services.CouponAPI;
 using Micro.Services.CouponAPI.Data;
+using Micro.Services.CouponAPI.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -78,33 +79,8 @@ builder.Services.AddHealthChecks()
 		tags: new[] {"ready"}
 	);
 
-var apiSettings = builder.Configuration.GetSection("ApiSettings");
-var secret = apiSettings.GetValue<string>("Secret");
-var issuer = apiSettings.GetValue<string>("Issuer");
-var audience = apiSettings.GetValue<string>("Audience");
-var key = Encoding.ASCII.GetBytes(secret);
-
-builder.Services.AddAuthentication(o =>
-{
-	o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-	o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(o =>
-{
-	o.TokenValidationParameters = new TokenValidationParameters
-	{
-		ValidateIssuerSigningKey = true,
-		IssuerSigningKey = new SymmetricSecurityKey(key),
-		ValidateIssuer = true,
-		ValidIssuer = issuer,
-		ValidateAudience = true,
-		ValidAudience = audience,
-		// RequireExpirationTime = true,
-		// ValidateLifetime = true,
-		// ClockSkew = TimeSpan.Zero
-	};
-});
-builder.Services.AddAuthorization();
-
+// Use extension method to add authentication
+builder.AddAppAuthentication();
 
 var app = builder.Build();
 
@@ -115,36 +91,8 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
-// This checks if the db is ready to accept requests and gives a response
-app.MapHealthChecks("/api/health/ready", new HealthCheckOptions
-{
-	Predicate = check => check.Tags.Contains("ready"),
-	ResponseWriter = async (context, report) =>
-	{
-		var result = JsonSerializer.Serialize(
-			new
-			{
-				status = report.Status.ToString(),
-				checks = report.Entries.Select(entry => new
-				{
-					name = entry.Key,
-					status = entry.Value.Status.ToString(),
-					exception = entry.Value.Exception != null ? entry.Value.Exception.Message : "none",
-					duration = entry.Value.Duration.ToString()
-				})
-			}
-		);
-
-		context.Response.ContentType = MediaTypeNames.Application.Json;
-		await context.Response.WriteAsync(result);
-	}
-});
-// This checks if API is live
-// This checks if API is live
-app.MapHealthChecks("/api/health/live", new HealthCheckOptions
-{
-	Predicate = _ => false,
-});
+// Use extension method to map health checks
+app.MapAppHealthChecks();
 
 app.UseHttpsRedirection();
 app.UseCors("Open");

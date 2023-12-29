@@ -70,16 +70,15 @@ public class AuthController : Controller
 	public async Task<IActionResult> Register(RegistrationRequestDto dto)
 	{
 		ResponseDto result = await _authService.RegisterUserAsync(dto);
-		ResponseDto assignRole;
 
 		if (result != null && result.IsSuccess)
 		{
-			if (!string.IsNullOrEmpty(dto.Role))
+			if (string.IsNullOrEmpty(dto.Role))
 			{
 				dto.Role = SD.RoleCustomer;
 			}
 
-			assignRole = await _authService.AssignRoleAsync(dto);
+			var assignRole = await _authService.AssignRoleAsync(dto);
 
 			if (assignRole != null && assignRole.IsSuccess)
 			{
@@ -94,8 +93,8 @@ public class AuthController : Controller
 
 		var roleList = new List<SelectListItem>
 		{
-			new SelectListItem {Text = SD.RoleAdmin, Value = SD.RoleAdmin},
-			new SelectListItem {Text = SD.RoleCustomer, Value = SD.RoleCustomer}
+			new() {Text = SD.RoleAdmin, Value = SD.RoleAdmin},
+			new() {Text = SD.RoleCustomer, Value = SD.RoleCustomer}
 		};
 
 		// Save the role list to a ViewBag property instead of ViewModel
