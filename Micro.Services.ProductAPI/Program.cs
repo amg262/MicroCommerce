@@ -1,7 +1,7 @@
 using AutoMapper;
-using Micro.Services.CouponAPI;
-using Micro.Services.CouponAPI.Data;
-using Micro.Services.CouponAPI.Extensions;
+using Micro.Services.ProductAPI;
+using Micro.Services.ProductAPI.Data;
+using Micro.Services.ProductAPI.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -20,6 +20,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy(name: "Open",
@@ -36,9 +37,9 @@ builder.Services.AddSwaggerGen(option =>
 {
 	option.SwaggerDoc("v1", new OpenApiInfo
 	{
-		Title = "Micro.Services.CouponAPI",
+		Title = "Micro.Services.ProductAPI",
 		Version = "v1",
-		Description = "This is the Micro.Services.CouponAPI API",
+		Description = "This is the Micro.Services.ProductAPI API",
 	});
 	option.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
 	{
@@ -79,16 +80,15 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
+	app.UseDeveloperExceptionPage();
 }
 
 // Use extension method to map health checks
 app.MapAppHealthChecks();
-
 app.UseHttpsRedirection();
 app.UseCors("Open");
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 ApplyMigration();
 app.Run();
