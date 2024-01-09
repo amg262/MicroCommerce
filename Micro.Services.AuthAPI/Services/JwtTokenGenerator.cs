@@ -43,7 +43,16 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 				new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
 		};
 
-		var token = tokenHandler.CreateToken(tokenDescriptor);
-		return tokenHandler.WriteToken(token);
+		try
+		{
+			var token = tokenHandler.CreateToken(tokenDescriptor);
+			return tokenHandler.WriteToken(token);
+
+		} catch (Exception e)
+		{
+			Console.WriteLine(e);
+			throw;
+		}
+		
 	}
 }

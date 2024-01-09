@@ -28,14 +28,12 @@ namespace Micro.Services.AuthAPI.Controllers
 		{
 			var errorMessage = await _authService.Register(model);
 
-			if (!string.IsNullOrEmpty(errorMessage))
-			{
-				_response.IsSuccess = false;
-				_response.Message = errorMessage;
-				return BadRequest(_response);
-			}
+			if (string.IsNullOrEmpty(errorMessage)) return Ok(_response);
+			
+			_response.IsSuccess = false;
+			_response.Message = errorMessage;
+			return BadRequest(_response);
 
-			return Ok(_response);
 		}
 
 		[HttpPost("login")]

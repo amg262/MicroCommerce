@@ -11,7 +11,7 @@ namespace Micro.Services.ProductAPI.Controllers;
 
 [Route("api/product")]
 [ApiController]
-[Authorize]
+// [Authorize]
 // ControllerBase is a controller without view support
 public class ProductAPIController : ControllerBase
 {
@@ -63,7 +63,7 @@ public class ProductAPIController : ControllerBase
 
 
 	[HttpPost]
-	[Authorize(Roles = SD.RoleAdmin)]
+	// [Authorize(Roles = SD.RoleAdmin)]
 	public async Task<ResponseDto> Post([FromBody] ProductDto couponDto)
 	{
 		try
@@ -84,7 +84,7 @@ public class ProductAPIController : ControllerBase
 	}
 
 	[HttpPut]
-	[Authorize(Roles = SD.RoleAdmin)]
+	// [Authorize(Roles = SD.RoleAdmin)]
 	public async Task<ResponseDto> Put([FromBody] ProductDto couponDto)
 	{
 		try
@@ -106,7 +106,7 @@ public class ProductAPIController : ControllerBase
 
 	[HttpDelete]
 	[Route("{id:int}")]
-	[Authorize(Roles = SD.RoleAdmin)]
+	// [Authorize(Roles = SD.RoleAdmin)]
 	public async Task<ResponseDto> Delete(int id)
 	{
 		try
