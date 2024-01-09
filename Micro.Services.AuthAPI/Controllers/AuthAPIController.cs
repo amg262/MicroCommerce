@@ -57,14 +57,12 @@ namespace Micro.Services.AuthAPI.Controllers
 		{
 			var assignRoleSuccess = await _authService.AssignRole(model.Email, model.Role.ToUpper());
 
-			if (!assignRoleSuccess)
-			{
-				_response.IsSuccess = false;
-				_response.Message = "Username or password is incorrect.";
-				return BadRequest(_response);
-			}
+			if (assignRoleSuccess) return Ok(_response);
 			
-			return Ok(_response);
+			_response.IsSuccess = false;
+			_response.Message = "Username or password is incorrect.";
+			return BadRequest(_response);
+
 		}
 	}
 }
