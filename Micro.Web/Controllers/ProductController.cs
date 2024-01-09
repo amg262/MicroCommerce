@@ -17,7 +17,7 @@ public class ProductController : Controller
 
 	public async Task<IActionResult> ProductIndex()
 	{
-		List<ProductDto>? list = new();
+		List<ProductDto>? list = [];
 
 		ResponseDto? response = await _productService.GetAllProductsAsync();
 
