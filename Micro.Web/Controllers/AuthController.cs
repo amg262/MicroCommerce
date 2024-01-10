@@ -57,8 +57,8 @@ public class AuthController : Controller
 	{
 		var roleList = new List<SelectListItem>
 		{
-			new SelectListItem {Text = SD.RoleAdmin, Value = SD.RoleAdmin},
-			new SelectListItem {Text = SD.RoleCustomer, Value = SD.RoleCustomer}
+			new() {Text = SD.RoleAdmin, Value = SD.RoleAdmin},
+			new() {Text = SD.RoleCustomer, Value = SD.RoleCustomer}
 		};
 
 		// Save the role list to a ViewBag property instead of ViewModel

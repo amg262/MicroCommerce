@@ -8,4 +8,10 @@ public class RequestDto
 	public string Url { get; set; } = "";
 	public object Data { get; set; } = new object();
 	public string AccessToken { get; set; } = "";
+
+	public override string ToString()
+	{
+		return $"{nameof(ApiType)}: {ApiType}, {nameof(Url)}: {Url}, " +
+		       $"{nameof(Data)}: {Data}, {nameof(AccessToken)}: {AccessToken}";
+	}
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Micro.Web.Models;
 using Micro.Web.Service.IService;
+using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 
 namespace Micro.Web.Controllers;
@@ -48,8 +49,23 @@ public class HomeController : Controller
 		return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
 	}
 
-	public IActionResult Details()
+	[Authorize]
+	public async Task<IActionResult> Details(int productId)
 	{
-		throw new NotImplementedException();
+		ProductDto? model = new();
+
+		ResponseDto? response = await _productService.GetProductByIdAsync(productId);
+
+		if (response != null && response.IsSuccess)
+		{
+			// Using Convert.ToString() to avoid null reference exception
+			model = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(response.Result));
+		}
+		else
+		{
+			TempData["error"] = response?.Message;
+		}
+
+		return View(model);
 	}
 }
