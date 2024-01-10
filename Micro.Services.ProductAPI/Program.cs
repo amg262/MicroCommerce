@@ -15,18 +15,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy(name: "Open",
-		builder =>
+		policyBuilder =>
 		{
-			builder
+			policyBuilder
 				.AllowAnyOrigin()
 				.AllowAnyMethod()
 				.AllowAnyHeader();

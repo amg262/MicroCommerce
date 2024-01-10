@@ -1,9 +1,75 @@
+using AutoMapper;
+using Micro.Services.ShoppingCartAPI.Data;
+using Micro.Services.ProductAPI.Extensions;
+using Micro.Services.ShoppingCartAPI;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(name: "Open",
+		policyBuilder =>
+		{
+			policyBuilder
+				.AllowAnyOrigin()
+				.AllowAnyMethod()
+				.AllowAnyHeader();
+		});
+});
+
+builder.Services.AddSwaggerGen(option =>
+{
+	option.SwaggerDoc("v1", new OpenApiInfo
+	{
+		Title = "Micro.Services.ShoppingCartAPI",
+		Version = "v1",
+		Description = "This is the Micro.Services.ShoppingCart API",
+	});
+	option.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
+	{
+		Name = "Authorization",
+		Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+		In = ParameterLocation.Header,
+		Type = SecuritySchemeType.ApiKey,
+		Scheme = "Bearer"
+	});
+	option.AddSecurityRequirement(new OpenApiSecurityRequirement
+	{
+		{
+			new OpenApiSecurityScheme
+			{
+				Reference = new OpenApiReference
+				{
+					Type = ReferenceType.SecurityScheme,
+					Id = JwtBearerDefaults.AuthenticationScheme
+				}
+			},
+			Array.Empty<string>()
+		}
+	});
+});
+builder.Services.AddHealthChecks()
+	.AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+		name: "ShoppingCartDb-check",
+		tags: new[] {"ready"}
+	);
+
+// Use extension method to add authentication
+builder.AddAppAuthentication();
 
 var app = builder.Build();
 
@@ -12,33 +78,26 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
+	app.UseDeveloperExceptionPage();
 }
 
+// Use extension method to map health checks
+app.MapAppHealthChecks();
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-	"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-	{
-		var forecast = Enumerable.Range(1, 5).Select(index =>
-				new WeatherForecast
-				(
-					DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-					Random.Shared.Next(-20, 55),
-					summaries[Random.Shared.Next(summaries.Length)]
-				))
-			.ToArray();
-		return forecast;
-	})
-	.WithName("GetWeatherForecast")
-	.WithOpenApi();
-
+app.UseCors("Open");
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+ApplyMigration();
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+void ApplyMigration()
 {
-	public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
+	using var scope = app.Services.CreateScope();
+	var _db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+	if (_db.Database.GetPendingMigrations().Any())
+	{
+		_db.Database.Migrate();
+	}
 }
