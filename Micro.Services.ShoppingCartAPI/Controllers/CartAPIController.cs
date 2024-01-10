@@ -75,4 +75,64 @@ public class CartAPIController : ControllerBase
 
 		return _response;
 	}
+
+	[HttpGet("GetCart/{userId}")]
+	public async Task<ResponseDto> GetCart(string userId)
+	{
+		try
+		{
+			CartDto cart = new()
+			{
+				CartHeader = _mapper.Map<CartHeaderDto>(await _db.CartHeaders.FirstAsync(u => u.UserId == userId))
+			};
+			cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_db.CartDetails
+				.Where(u => u.CartHeaderId == cart.CartHeader.CartHeaderId));
+
+			foreach (var item in cart.CartDetails)
+			{
+				cart.CartHeader.CartTotal += (item.Count * item.Product.Price);
+			}
+
+			_response.Result = cart;
+		}
+		catch (Exception ex)
+		{
+			_response.IsSuccess = false;
+			_response.Message = ex.Message;
+		}
+
+		return _response;
+	}
+
+
+	[HttpPost("RemoveCart")]
+	public async Task<ResponseDto> RemoveCart([FromBody] int cartDetailsId)
+	{
+		try
+		{
+			CartDetails cartDetails = _db.CartDetails
+				.First(u => u.CartDetailsId == cartDetailsId);
+
+			var cartItemsCount = await _db.CartDetails.CountAsync(u => u.CartHeaderId == cartDetails.CartHeaderId);
+			_db.CartDetails.Remove(cartDetails);
+			if (cartItemsCount == 1)
+			{
+				var cartHeaderToRemove = await _db.CartHeaders
+					.FirstOrDefaultAsync(u => u.CartHeaderId == cartDetails.CartHeaderId);
+
+				_db.CartHeaders.Remove(cartHeaderToRemove);
+			}
+
+			await _db.SaveChangesAsync();
+
+			_response.Result = true;
+		}
+		catch (Exception ex)
+		{
+			_response.Message = ex.Message.ToString();
+			_response.IsSuccess = false;
+		}
+
+		return _response;
+	}
 }
