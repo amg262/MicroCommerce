@@ -10,4 +10,10 @@ public class CartHeader
 	public string? CouponCode { get; set; }
 	[NotMapped] public double Discount { get; set; }
 	[NotMapped] public double CartTotal { get; set; }
+
+	public override string ToString()
+	{
+		return $"{nameof(CartHeaderId)}: {CartHeaderId}, {nameof(UserId)}: {UserId}, {nameof(CouponCode)}: " +
+		       $"{CouponCode}, {nameof(Discount)}: {Discount}, {nameof(CartTotal)}: {CartTotal}";
+	}
 }

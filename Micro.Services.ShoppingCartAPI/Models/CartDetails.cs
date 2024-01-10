@@ -12,4 +12,11 @@ public class CartDetails
 	public int ProductId { get; set; }
 	[NotMapped] public ProductDto Product { get; set; }
 	public int Count { get; set; }
+
+	public override string ToString()
+	{
+		return
+			$"{nameof(CartDetailsId)}: {CartDetailsId}, {nameof(CartHeaderId)}: {CartHeaderId}, {nameof(CartHeader)}: " +
+			$"{CartHeader}, {nameof(ProductId)}: {ProductId}, {nameof(Product)}: {Product}, {nameof(Count)}: {Count}";
+	}
 }
