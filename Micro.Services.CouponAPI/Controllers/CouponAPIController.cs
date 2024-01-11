@@ -5,12 +5,13 @@ using Micro.Services.CouponAPI.Models.Dto;
 using Micro.Services.CouponAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Micro.Services.CouponAPI.Controllers;
 
 [Route("api/coupon")]
 [ApiController]
-[Authorize]
+// [Authorize]
 // ControllerBase is a controller without view support
 public class CouponAPIController : ControllerBase
 {
@@ -62,12 +63,11 @@ public class CouponAPIController : ControllerBase
 
 	[HttpGet]
 	[Route("GetByCode/{code}")]
-	public ResponseDto Get(string code)
+	public async Task<ResponseDto> Get(string code)
 	{
 		try
 		{
-			Coupon coupon = _db.Coupons.First(i =>
-				string.Equals(i.CouponCode, code, StringComparison.CurrentCultureIgnoreCase));
+			Coupon coupon = await _db.Coupons.FirstAsync(u => u.CouponCode.ToLower() == code.ToLower());
 			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
 		}
 		catch (Exception e)
@@ -81,13 +81,13 @@ public class CouponAPIController : ControllerBase
 
 	[HttpPost]
 	[Authorize(Roles = SD.RoleAdmin)]
-	public ResponseDto Post([FromBody] CouponDto couponDto)
+	public async Task<ResponseDto> Post([FromBody] CouponDto couponDto)
 	{
 		try
 		{
 			Coupon coupon = _mapper.Map<Coupon>(couponDto); // Map the CouponDto to a Coupon
 			_db.Coupons.Add(coupon);
-			_db.SaveChanges();
+			await _db.SaveChangesAsync();
 
 			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
 		}
@@ -102,13 +102,13 @@ public class CouponAPIController : ControllerBase
 
 	[HttpPut]
 	[Authorize(Roles = SD.RoleAdmin)]
-	public ResponseDto Put([FromBody] CouponDto couponDto)
+	public async Task<ResponseDto> Put([FromBody] CouponDto couponDto)
 	{
 		try
 		{
 			Coupon coupon = _mapper.Map<Coupon>(couponDto); // Map the CouponDto to a Coupon
 			_db.Coupons.Update(coupon);
-			_db.SaveChanges();
+			await _db.SaveChangesAsync();
 
 			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
 		}
@@ -124,13 +124,13 @@ public class CouponAPIController : ControllerBase
 	[HttpDelete]
 	[Route("{id:int}")]
 	[Authorize(Roles = SD.RoleAdmin)]
-	public ResponseDto Delete(int id)
+	public async Task<ResponseDto> Delete(int id)
 	{
 		try
 		{
 			Coupon coupon = _db.Coupons.First(i => i.CouponId == id); // Map the CouponDto to a Coupon
 			_db.Coupons.Remove(coupon);
-			_db.SaveChanges();
+			await _db.SaveChangesAsync();
 
 			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
 		}

@@ -31,8 +31,8 @@ public class ProductAPIController : ControllerBase
 	{
 		try
 		{
-			IEnumerable<Product> coupons = await _db.Products.ToListAsync();
-			_response.Result = _mapper.Map<IEnumerable<Product>>(coupons); // Map the Products to a ProductDto
+			IEnumerable<Product> products = await _db.Products.ToListAsync();
+			_response.Result = _mapper.Map<IEnumerable<Product>>(products); // Map the Products to a ProductDto
 		}
 		catch (Exception e)
 		{
@@ -49,8 +49,8 @@ public class ProductAPIController : ControllerBase
 	{
 		try
 		{
-			Product? coupon = await _db.Products.FirstOrDefaultAsync(i => i.ProductId == id);
-			_response.Result = _mapper.Map<ProductDto>(coupon); // Map the Product to a ProductDto
+			Product? product = await _db.Products.FirstOrDefaultAsync(i => i.ProductId == id);
+			_response.Result = _mapper.Map<ProductDto>(product); // Map the Product to a ProductDto
 		}
 		catch (Exception e)
 		{
@@ -64,15 +64,15 @@ public class ProductAPIController : ControllerBase
 
 	[HttpPost]
 	[Authorize(Roles = SD.RoleAdmin)]
-	public async Task<ResponseDto> Post([FromBody] ProductDto couponDto)
+	public async Task<ResponseDto> Post([FromBody] ProductDto productDto)
 	{
 		try
 		{
-			Product coupon = _mapper.Map<Product>(couponDto); // Map the ProductDto to a Product
-			await _db.Products.AddAsync(coupon);
+			Product product = _mapper.Map<Product>(productDto); // Map the ProductDto to a Product
+			await _db.Products.AddAsync(product);
 			await _db.SaveChangesAsync();
 
-			_response.Result = _mapper.Map<ProductDto>(coupon); // Map the Product to a ProductDto
+			_response.Result = _mapper.Map<ProductDto>(product); // Map the Product to a ProductDto
 		}
 		catch (Exception e)
 		{
@@ -85,15 +85,15 @@ public class ProductAPIController : ControllerBase
 
 	[HttpPut]
 	[Authorize(Roles = SD.RoleAdmin)]
-	public async Task<ResponseDto> Put([FromBody] ProductDto couponDto)
+	public async Task<ResponseDto> Put([FromBody] ProductDto productDto)
 	{
 		try
 		{
-			Product coupon = _mapper.Map<Product>(couponDto); // Map the ProductDto to a Product
-			_db.Products.Update(coupon);
+			Product product = _mapper.Map<Product>(productDto); // Map the ProductDto to a Product
+			_db.Products.Update(product);
 			await _db.SaveChangesAsync();
 
-			_response.Result = _mapper.Map<ProductDto>(coupon); // Map the Product to a ProductDto
+			_response.Result = _mapper.Map<ProductDto>(product); // Map the Product to a ProductDto
 		}
 		catch (Exception e)
 		{
@@ -111,11 +111,11 @@ public class ProductAPIController : ControllerBase
 	{
 		try
 		{
-			var coupon = _db.Products.FirstOrDefault(i => i.ProductId == id); // Map the ProductDto to a Product
-			_db.Products.Remove(coupon);
+			var product = _db.Products.FirstOrDefault(i => i.ProductId == id); // Map the ProductDto to a Product
+			_db.Products.Remove(product);
 			await _db.SaveChangesAsync();
 
-			_response.Result = _mapper.Map<ProductDto>(coupon); // Map the Product to a ProductDto
+			_response.Result = _mapper.Map<ProductDto>(product); // Map the Product to a ProductDto
 		}
 		catch (Exception e)
 		{

@@ -18,13 +18,16 @@ IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
+
 SD.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
+SD.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
+
 builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(SD.ProductAPIBase));
+builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(SD.CouponAPIBase));
 
 builder.Services.AddCors(options =>
 {
