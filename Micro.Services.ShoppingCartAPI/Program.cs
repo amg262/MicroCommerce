@@ -1,7 +1,10 @@
 using AutoMapper;
 using Micro.Services.ShoppingCartAPI.Data;
-using Micro.Services.ProductAPI.Extensions;
 using Micro.Services.ShoppingCartAPI;
+using Micro.Services.ShoppingCartAPI.Extensions;
+using Micro.Services.ShoppingCartAPI.Service;
+using Micro.Services.ShoppingCartAPI.Service.IService;
+using Micro.Services.ShoppingCartAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -18,6 +21,10 @@ builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddScoped<IProductService, ProductService>();
+SD.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
+builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(SD.ProductAPIBase));
 
 builder.Services.AddCors(options =>
 {

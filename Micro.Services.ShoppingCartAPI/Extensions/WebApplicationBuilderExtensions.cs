@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Micro.Services.ProductAPI.Extensions;
+namespace Micro.Services.ShoppingCartAPI.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {
