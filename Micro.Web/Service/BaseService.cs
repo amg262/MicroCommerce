@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
@@ -9,34 +8,50 @@ using Micro.Web.Utility;
 
 namespace Micro.Web.Service;
 
+/// <summary>
+/// Provides base functionalities for making HTTP requests.
+/// </summary>
 public class BaseService : IBaseService
 {
 	private readonly IHttpClientFactory _clientFactory;
 	private readonly ITokenProvider _tokenProvider;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="BaseService"/> class.
+	/// </summary>
+	/// <param name="clientFactory">Factory for creating instances of <see cref="HttpClient"/>.</param>
+	/// <param name="tokenProvider">Provider for retrieving authentication tokens.</param>
 	public BaseService(IHttpClientFactory clientFactory, ITokenProvider tokenProvider)
 	{
 		_clientFactory = clientFactory;
 		_tokenProvider = tokenProvider;
 	}
 
+	/// <summary>
+	/// Asynchronously sends an HTTP request based on the provided <see cref="RequestDto"/>.
+	/// </summary>
+	/// <param name="requestDto">The request data transfer object containing request details.</param>
+	/// <param name="withBearer">Indicates whether to include a bearer token in the request header.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the <see cref="ResponseDto"/>.</returns>
 	public async Task<ResponseDto?> SendAsync(RequestDto requestDto, bool withBearer = true)
 	{
 		try
 		{
+			// Create a new HttpClient instance with a named configuration from the IHttpClientFactory
 			HttpClient client = _clientFactory.CreateClient("MicroAPI");
-			HttpRequestMessage message = new();
+			HttpRequestMessage message = new HttpRequestMessage();
 
-
+			// Add headers to the HTTP request message
 			message.Headers.Add("Accept", "application/json");
-			// token
+
+			// Include bearer token in the request if required
 			if (withBearer)
 			{
-				// 
 				var token = _tokenProvider.GetToken();
-				message.Headers.Add("Authorization", $"Bearer {token}");
+				message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 			}
 
+			// Set the request URI and content
 			message.RequestUri = new Uri(requestDto.Url);
 			if (requestDto.Data != null)
 			{
@@ -44,8 +59,7 @@ public class BaseService : IBaseService
 					"application/json");
 			}
 
-			HttpResponseMessage? apiResponse = null;
-
+			// Set the HttpMethod based on the ApiType defined in the request DTO
 			message.Method = requestDto.ApiType switch
 			{
 				ApiType.POST => HttpMethod.Post,
@@ -54,8 +68,10 @@ public class BaseService : IBaseService
 				_ => HttpMethod.Get
 			};
 
-			apiResponse = await client.SendAsync(message);
+			// Send the HTTP request asynchronously
+			var apiResponse = await client.SendAsync(message);
 
+			// Handle different HTTP status codes
 			switch (apiResponse.StatusCode)
 			{
 				case HttpStatusCode.NotFound:
@@ -74,12 +90,14 @@ public class BaseService : IBaseService
 		}
 		catch (Exception e)
 		{
+			// Log the exception details for debugging purposes
 			Console.WriteLine(e.ToString());
 			if (e.InnerException != null)
 			{
 				Console.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
 			}
 
+			// Return a response DTO indicating the failure
 			ResponseDto dto = new() {Message = e.Message.ToString(), IsSuccess = false};
 			return dto;
 		}

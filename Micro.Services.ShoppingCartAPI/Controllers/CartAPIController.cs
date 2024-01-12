@@ -87,8 +87,7 @@ public class CartAPIController : ControllerBase
 	{
 		try
 		{
-			CartDto cart = new()
-			{
+			CartDto cart = new() {
 				CartHeader = _mapper.Map<CartHeaderDto>(await _db.CartHeaders.FirstAsync(u => u.UserId == userId))
 			};
 			cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_db.CartDetails
