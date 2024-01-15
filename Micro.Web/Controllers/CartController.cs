@@ -67,4 +67,15 @@ public class CartController : Controller
 		TempData["success"] = "Cart updated successfully";
 		return RedirectToAction(nameof(CartIndex));
 	}
+
+	[HttpPost]
+	public async Task<IActionResult> EmailCart(CartDto cartDto)
+	{
+		ResponseDto? response = await _cartService.EmailCart(cartDto);
+
+		if (!(response != null & response.IsSuccess)) return View(nameof(CartIndex));
+
+		TempData["success"] = "Cart updated successfully";
+		return RedirectToAction(nameof(CartIndex));
+	}
 }

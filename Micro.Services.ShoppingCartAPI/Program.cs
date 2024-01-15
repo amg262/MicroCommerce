@@ -1,4 +1,5 @@
 using AutoMapper;
+using Micro.MessageBus;
 using Micro.Services.ShoppingCartAPI.Data;
 using Micro.Services.ShoppingCartAPI;
 using Micro.Services.ShoppingCartAPI.Extensions;
@@ -23,7 +24,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
-
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 
 SD.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
 SD.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];

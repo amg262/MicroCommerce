@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Micro.MessageBus;
 using Micro.Services.ShoppingCartAPI.Data;
 using Micro.Services.ShoppingCartAPI.Models;
 using Micro.Services.ShoppingCartAPI.Models.Dto;
@@ -17,14 +18,18 @@ public class CartAPIController : ControllerBase
 	private ResponseDto _response;
 	private readonly IProductService _productService;
 	private readonly ICouponService _couponService;
+	private readonly IMessageBus _messageBus;
+	private readonly IConfiguration _configuration;
 
 	public CartAPIController(AppDbContext db, IMapper mapper, IProductService productService,
-		ICouponService couponService)
+		ICouponService couponService, IMessageBus messageBus, IConfiguration configuration)
 	{
 		_db = db;
 		_mapper = mapper;
 		_productService = productService;
 		_couponService = couponService;
+		_messageBus = messageBus;
+		_configuration = configuration;
 		_response = new ResponseDto();
 	}
 
@@ -87,7 +92,8 @@ public class CartAPIController : ControllerBase
 	{
 		try
 		{
-			CartDto cart = new() {
+			CartDto cart = new()
+			{
 				CartHeader = _mapper.Map<CartHeaderDto>(await _db.CartHeaders.FirstAsync(u => u.UserId == userId))
 			};
 			cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_db.CartDetails
@@ -166,6 +172,24 @@ public class CartAPIController : ControllerBase
 			cartFromDb.CouponCode = cartDto.CartHeader.CouponCode;
 			_db.CartHeaders.Update(cartFromDb);
 			await _db.SaveChangesAsync();
+			_response.Result = true;
+		}
+		catch (Exception ex)
+		{
+			_response.IsSuccess = false;
+			_response.Message = ex.ToString();
+		}
+
+		return _response;
+	}
+
+	[HttpPost("EmailCartRequest")]
+	public async Task<object> EmailCartRequest([FromBody] CartDto cartDto)
+	{
+		try
+		{
+			await _messageBus.PublishMessage(cartDto,
+				_configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCart"));
 			_response.Result = true;
 		}
 		catch (Exception ex)
