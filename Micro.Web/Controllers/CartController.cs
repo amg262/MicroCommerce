@@ -71,11 +71,14 @@ public class CartController : Controller
 	[HttpPost]
 	public async Task<IActionResult> EmailCart(CartDto cartDto)
 	{
-		ResponseDto? response = await _cartService.EmailCart(cartDto);
+		CartDto cart = await LoadCartDtoBasedOnLoggedInUser();
+		cart.CartHeader.Email =
+			User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value;
+		ResponseDto? response = await _cartService.EmailCart(cart);
 
-		if (!(response != null & response.IsSuccess)) return View(nameof(CartIndex));
-
-		TempData["success"] = "Cart updated successfully";
+		// ReSharper disable once Mvc.ViewNotResolved
+		if (!(response != null & response.IsSuccess)) return View();
+		TempData["success"] = "Email will be processed and sent shortly.";
 		return RedirectToAction(nameof(CartIndex));
 	}
 }
