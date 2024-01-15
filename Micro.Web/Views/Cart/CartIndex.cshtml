@@ -44,7 +44,7 @@
                         <div style="font-size:11px;">@Html.Raw(cartObj.Product.Description)</div>
                     </div>
                     <div class="col-3 col-md-2 pt-md-4" style="font-size:11px;">
-                            <span style="font-size:17px;">@string.Format("{0:c}",cartObj.Product.Price) </span>
+                            <span style="font-size:17px;">@($"{cartObj.Product.Price:c}") </span>
                     </div>
                     <div class="col-3 col-md-2 pt-md-4" style="font-size:11px;">
                         <span style="font-size:17px;"> @cartObj.Count</span>
@@ -73,10 +73,10 @@
                         }
                     </div>
                     <div class="col-6 text-end">
-                        <span class="text-danger" style="font-size:21px;">  Order Total :  @string.Format("{0:c}", Model.CartHeader.CartTotal)  <br /></span>
+                        <span class="text-danger" style="font-size:21px;">  Order Total : @($"{Model.CartHeader.CartTotal:c}") <br /></span>
                         @if (Model.CartHeader.Discount > 0)
                         {
-                            <span class="text-success"> Order Discount :   @string.Format("{0:c}", Model.CartHeader.Discount ) </span>
+                            <span class="text-success"> Order Discount : @($"{Model.CartHeader.Discount:c}") </span>
                         }
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                     <button type="submit" class="btn btn-outline-danger form-control">Email Cart</button>
                 </div>
                 <div class="col-6 col-md-3 offset-md-6">
-                    <button disabled class="btn btn-success form-control">Checkout (Comming Soon!)" </button>
+                    <button disabled class="btn btn-success form-control">Checkout (Comming Soon!) </button>
                 </div>
             </div>
         </div>
