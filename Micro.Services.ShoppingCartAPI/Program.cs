@@ -19,15 +19,19 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
+
 
 SD.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
 SD.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
 
-builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(SD.ProductAPIBase));
-builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(SD.CouponAPIBase));
+builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(SD.ProductAPIBase))
+	.AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
+builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(SD.CouponAPIBase))
+	.AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 
 builder.Services.AddCors(options =>
 {

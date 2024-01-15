@@ -11,7 +11,7 @@ namespace Micro.Services.CouponAPI.Controllers;
 
 [Route("api/coupon")]
 [ApiController]
-// [Authorize]
+[Authorize]
 // ControllerBase is a controller without view support
 public class CouponAPIController : ControllerBase
 {
