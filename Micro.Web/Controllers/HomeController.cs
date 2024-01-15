@@ -53,8 +53,7 @@ public class HomeController : Controller
 	}
 
 	[Authorize]
-	[HttpGet]
-	public async Task<IActionResult> Details(int productId)
+	public async Task<IActionResult> ProductDetails(int productId)
 	{
 		ProductDto? model = new();
 
@@ -75,10 +74,10 @@ public class HomeController : Controller
 	
 	[Authorize]
 	[HttpPost]
-
-	public async Task<IActionResult> Details(ProductDto productDto)
+	[ActionName("ProductDetails")]
+	public async Task<IActionResult> ProductDetails(ProductDto productDto)
 	{
-		CartDto cartDto = new CartDto()
+		CartDto cartDto = new()
 		{
 			CartHeader = new CartHeaderDto
 			{
@@ -86,7 +85,7 @@ public class HomeController : Controller
 			}
 		};
 
-		CartDetailsDto cartDetails = new CartDetailsDto()
+		CartDetailsDto cartDetails = new()
 		{
 			Count = productDto.Count,
 			ProductId = productDto.ProductId,

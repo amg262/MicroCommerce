@@ -34,4 +34,38 @@ public class CartController : Controller
 		return cartDto;
 
 	}
+
+	public async Task<IActionResult> Remove(int cartDetailsId)
+	{
+		var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
+		ResponseDto? response = await _cartService.RemoveFromCartAsync(cartDetailsId);
+		
+		if (!(response != null & response.IsSuccess)) return View(nameof(CartIndex));
+		
+		TempData["success"] = "Cart updated successfully";
+		return RedirectToAction(nameof(CartIndex));
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> ApplyCoupon(CartDto cartDto)
+	{
+		ResponseDto? response = await _cartService.ApplyCouponAsync(cartDto);
+		
+		if (!(response != null & response.IsSuccess)) return View(nameof(CartIndex));
+		
+		TempData["success"] = "Cart updated successfully";
+		return RedirectToAction(nameof(CartIndex));
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
+	{
+		cartDto.CartHeader.CouponCode = "";
+		ResponseDto? response = await _cartService.ApplyCouponAsync(cartDto);
+		
+		if (!(response != null & response.IsSuccess)) return View(nameof(CartIndex));
+		
+		TempData["success"] = "Cart updated successfully";
+		return RedirectToAction(nameof(CartIndex));
+	}
 }
