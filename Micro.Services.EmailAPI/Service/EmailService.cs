@@ -2,6 +2,7 @@
 using Micro.Services.EmailAPI.Data;
 using Micro.Services.EmailAPI.Models;
 using Micro.Services.EmailAPI.Models.Dto;
+using Micro.Services.EmailAPI.Utility;
 using Microsoft.EntityFrameworkCore;
 
 namespace Micro.Services.EmailAPI.Service;
@@ -34,6 +35,12 @@ public class EmailService : IEmailService
 		message.Append("</ul>");
 
 		await LogAndEmail(message.ToString(), cartDto.CartHeader.Email);
+	}
+
+	public async Task RegisterUserEmailAndLog(string email)
+	{
+		string message = "User Registration Successful. <br/> Email : " + email;
+		await LogAndEmail(message, SD.EmailAdmin);
 	}
 
 	private async Task<bool> LogAndEmail(string message, string email)
