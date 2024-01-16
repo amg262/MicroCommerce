@@ -1,0 +1,6 @@
+@Micro.Services.OrderAPI_HostAddress = http://localhost:7005
+
+GET {{Micro.Services.OrderAPI_HostAddress}}/api
+Accept: application/json
+
+###

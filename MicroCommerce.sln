@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.MessageBus", "Micro.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.Services.EmailAPI", "Micro.Services.EmailAPI\Micro.Services.EmailAPI.csproj", "{F52E5698-3C90-44B5-8AA4-F79D735EAA6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.Services.OrderAPI", "Micro.Services.OrderAPI\Micro.Services.OrderAPI.csproj", "{CC9B2A01-E9D0-4518-8F0D-50E8C5BB2961}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,7 @@ Global
 		{293BD0A7-3457-4E67-BA17-B6CC927E6399} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
 		{DC6CE563-64FB-4617-A935-910EB9C7232E} = {8B36DCED-E6F5-4C7C-A0CE-DBA28E9737EA}
 		{F52E5698-3C90-44B5-8AA4-F79D735EAA6D} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
+		{CC9B2A01-E9D0-4518-8F0D-50E8C5BB2961} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F30856D9-F904-4616-9942-B68F663D7E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -65,5 +68,9 @@ Global
 		{F52E5698-3C90-44B5-8AA4-F79D735EAA6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F52E5698-3C90-44B5-8AA4-F79D735EAA6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F52E5698-3C90-44B5-8AA4-F79D735EAA6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC9B2A01-E9D0-4518-8F0D-50E8C5BB2961}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC9B2A01-E9D0-4518-8F0D-50E8C5BB2961}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC9B2A01-E9D0-4518-8F0D-50E8C5BB2961}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC9B2A01-E9D0-4518-8F0D-50E8C5BB2961}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
