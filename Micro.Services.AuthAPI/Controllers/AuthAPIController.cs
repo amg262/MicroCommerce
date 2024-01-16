@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Micro.MessageBus;
 using Micro.Services.AuthAPI.Models.Dto;
 using Micro.Services.AuthAPI.Services.IService;
 using Microsoft.AspNetCore.Http;
@@ -14,12 +15,16 @@ namespace Micro.Services.AuthAPI.Controllers
 	public class AuthAPIController : ControllerBase
 	{
 		private readonly IAuthService _authService;
+		private readonly IMessageBus _messageBus;
+		private readonly IConfiguration _configuration;
 		protected ResponseDto _response;
 
 
-		public AuthAPIController(IAuthService authService)
+		public AuthAPIController(IAuthService authService, IMessageBus messageBus, IConfiguration configuration)
 		{
 			_authService = authService;
+			_messageBus = messageBus;
+			_configuration = configuration;
 			_response = new ResponseDto();
 		}
 
@@ -28,12 +33,16 @@ namespace Micro.Services.AuthAPI.Controllers
 		{
 			var errorMessage = await _authService.Register(model);
 
-			if (string.IsNullOrEmpty(errorMessage)) return Ok(_response);
-			
+			if (string.IsNullOrEmpty(errorMessage))
+			{
+				_messageBus.PublishMessage(model.Email,
+					_configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue"));
+				return Ok(_response);
+			}
+
 			_response.IsSuccess = false;
 			_response.Message = errorMessage;
 			return BadRequest(_response);
-
 		}
 
 		[HttpPost("login")]
@@ -58,11 +67,10 @@ namespace Micro.Services.AuthAPI.Controllers
 			var assignRoleSuccess = await _authService.AssignRole(model.Email, model.Role.ToUpper());
 
 			if (assignRoleSuccess) return Ok(_response);
-			
+
 			_response.IsSuccess = false;
 			_response.Message = "Username or password is incorrect.";
 			return BadRequest(_response);
-
 		}
 	}
 }

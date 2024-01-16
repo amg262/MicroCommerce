@@ -1,3 +1,4 @@
+using Micro.MessageBus;
 using Micro.Services.AuthAPI.Data;
 using Micro.Services.AuthAPI.Models;
 using Micro.Services.AuthAPI.Services;
@@ -18,6 +19,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 builder.Services.AddControllers();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -43,11 +45,11 @@ app.Run();
 void ApplyMigration()
 {
 	using var scope = app.Services.CreateScope();
-	var _db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+	var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-	if (_db.Database.GetPendingMigrations().Any())
+	if (db.Database.GetPendingMigrations().Any())
 	{
-		_db.Database.Migrate();
+		db.Database.Migrate();
 	}
 }
 

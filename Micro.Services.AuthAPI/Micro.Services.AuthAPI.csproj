@@ -35,4 +35,9 @@
       <Folder Include="Controllers\" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <ProjectReference Include="..\Micro.MessageBus\Micro.MessageBus.csproj" />
+    </ItemGroup>
+
 </Project>
