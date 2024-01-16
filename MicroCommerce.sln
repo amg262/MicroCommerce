@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.Services.ShoppingCart
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.MessageBus", "Micro.MessageBus\Micro.MessageBus.csproj", "{DC6CE563-64FB-4617-A935-910EB9C7232E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.Services.EmailAPI", "Micro.Services.EmailAPI\Micro.Services.EmailAPI.csproj", "{F52E5698-3C90-44B5-8AA4-F79D735EAA6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,7 @@ Global
 		{BF1EF2A6-1914-4E6F-8E37-A1EF3842B715} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
 		{293BD0A7-3457-4E67-BA17-B6CC927E6399} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
 		{DC6CE563-64FB-4617-A935-910EB9C7232E} = {8B36DCED-E6F5-4C7C-A0CE-DBA28E9737EA}
+		{F52E5698-3C90-44B5-8AA4-F79D735EAA6D} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F30856D9-F904-4616-9942-B68F663D7E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -58,5 +61,9 @@ Global
 		{DC6CE563-64FB-4617-A935-910EB9C7232E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC6CE563-64FB-4617-A935-910EB9C7232E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC6CE563-64FB-4617-A935-910EB9C7232E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F52E5698-3C90-44B5-8AA4-F79D735EAA6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F52E5698-3C90-44B5-8AA4-F79D735EAA6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F52E5698-3C90-44B5-8AA4-F79D735EAA6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F52E5698-3C90-44B5-8AA4-F79D735EAA6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
