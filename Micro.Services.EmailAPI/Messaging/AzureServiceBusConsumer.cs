@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Azure.Messaging.ServiceBus;
 using Micro.Services.EmailAPI.Models.Dto;
+using Micro.Services.EmailAPI.Service;
 using Newtonsoft.Json;
 
 
@@ -11,11 +12,13 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 	private readonly string serviceBusConnectionString;
 	private readonly string emailCartQueue;
 	private readonly IConfiguration _configuration;
+	private readonly EmailService _emailService;
 
 	private ServiceBusProcessor _emailCartProcessor;
 
-	public AzureServiceBusConsumer(IConfiguration configuration)
+	public AzureServiceBusConsumer(IConfiguration configuration, EmailService emailService)
 	{
+		_emailService = emailService;
 		_configuration = configuration;
 
 		serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString");
@@ -49,6 +52,7 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 		try
 		{
 			//TODO - try to log email
+			await _emailService.EmailCartAndLog(objMessage);
 			await args.CompleteMessageAsync(args.Message);
 		}
 		catch (Exception ex)
