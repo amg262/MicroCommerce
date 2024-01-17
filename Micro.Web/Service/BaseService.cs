@@ -69,7 +69,25 @@ public class BaseService : IBaseService
 			};
 
 			// Send the HTTP request asynchronously
+			// // Send the HTTP request asynchronously
 			var apiResponse = await client.SendAsync(message);
+
+			// Log the request details
+			Console.WriteLine($"Request Method: {message.Method}");
+			Console.WriteLine($"Request URI: {message.RequestUri}");
+			Console.WriteLine($"Request Headers: {message.Headers}");
+			if (message.Content != null)
+			{
+				Console.WriteLine($"Request Content: {await message.Content.ReadAsStringAsync()}");
+			}
+
+			// Log the response details
+			Console.WriteLine($"Response Status Code: {apiResponse.StatusCode}");
+			Console.WriteLine($"Response Headers: {apiResponse.Headers}");
+			if (apiResponse.Content != null)
+			{
+				Console.WriteLine($"Response Content: {await apiResponse.Content.ReadAsStringAsync()}");
+			}
 
 			// Handle different HTTP status codes
 			switch (apiResponse.StatusCode)

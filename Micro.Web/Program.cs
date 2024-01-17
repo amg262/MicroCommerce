@@ -2,7 +2,6 @@ using Micro.Web.Service;
 using Micro.Web.Service.IService;
 using Micro.Web.Utility;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.JSInterop;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,12 +13,13 @@ builder.Services.AddHttpClient<ICouponService, CouponService>();
 builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddHttpClient<IProductService, ProductService>();
 builder.Services.AddHttpClient<ICartService, CartService>();
+builder.Services.AddHttpClient<IOrderService, OrderService>();
 
-// Populate the CouponAPIBase property in the SD class with the value from the appsettings.json file.
 SD.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
 SD.AuthAPIBase = builder.Configuration["ServiceUrls:AuthAPI"];
 SD.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
 SD.CartAPIBase = builder.Configuration["ServiceUrls:CartAPI"];
+SD.OrderAPIBase = builder.Configuration["ServiceUrls:OrderAPI"];
 
 // builder.Services.AddScoped<IJSRuntime, JSRuntime>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
@@ -28,6 +28,7 @@ builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 	.AddCookie(options =>

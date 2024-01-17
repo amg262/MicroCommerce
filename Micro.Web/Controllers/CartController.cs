@@ -10,10 +10,12 @@ namespace Micro.Web.Controllers;
 public class CartController : Controller
 {
 	private readonly ICartService _cartService;
+	private readonly IOrderService _orderService;
 
-	public CartController(ICartService cartService)
+	public CartController(ICartService cartService, IOrderService orderService)
 	{
 		_cartService = cartService;
+		_orderService = orderService;
 	}
 
 	[Authorize]
@@ -21,11 +23,47 @@ public class CartController : Controller
 	{
 		return View(await LoadCartDtoBasedOnLoggedInUser());
 	}
-	
+
 	[Authorize]
 	public async Task<IActionResult> Checkout()
 	{
 		return View(await LoadCartDtoBasedOnLoggedInUser());
+	}
+	
+	[HttpPost]
+	[ActionName("Checkout")]
+	
+	public async Task<IActionResult> Checkout(CartDto cartDto)
+	{
+		CartDto cart = await LoadCartDtoBasedOnLoggedInUser();
+		cart.CartHeader.Phone = cartDto.CartHeader.Phone;
+		cart.CartHeader.Name = cartDto.CartHeader.Name;
+		cart.CartHeader.Email = cartDto.CartHeader.Email;
+		
+		var response = new ResponseDto();
+		
+		try
+		{
+			response = await _orderService.CreateOrder(cart);
+			OrderHeaderDto orderHeaderDto =
+				JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.Message + "\n" + ex.StackTrace + "\n" + ex.InnerException);
+		}
+
+		
+
+		if (response != null && response.IsSuccess)
+		{
+		}
+
+		return View();
+		// if (!(response != null & response.IsSuccess)) return View(cartDto);
+		//
+		// TempData["success"] = "Transaction completed successfully";
+		// return RedirectToAction(nameof(CartIndex));
 	}
 
 	private async Task<CartDto> LoadCartDtoBasedOnLoggedInUser()
