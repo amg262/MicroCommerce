@@ -29,87 +29,55 @@ public class CartController : Controller
 	{
 		return View(await LoadCartDtoBasedOnLoggedInUser());
 	}
-	
+
 	[HttpPost]
 	[ActionName("Checkout")]
-	
 	public async Task<IActionResult> Checkout(CartDto cartDto)
 	{
 		CartDto cart = await LoadCartDtoBasedOnLoggedInUser();
 		cart.CartHeader.Phone = cartDto.CartHeader.Phone;
-		cart.CartHeader.Name = cartDto.CartHeader.Name;
 		cart.CartHeader.Email = cartDto.CartHeader.Email;
-		
-		var response = new ResponseDto();
-		
-		try
-		{
-			response = await _orderService.CreateOrder(cart);
-			OrderHeaderDto orderHeaderDto =
-				JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine(ex.Message + "\n" + ex.StackTrace + "\n" + ex.InnerException);
-		}
+		cart.CartHeader.Name = cartDto.CartHeader.Name;
 
-		
+		var response = await _orderService.CreateOrder(cart);
+		OrderHeaderDto orderHeaderDto =
+			JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
 
 		if (response != null && response.IsSuccess)
 		{
+			//get stripe session and redirect to stripe to place order    
 		}
 
 		return View();
-		// if (!(response != null & response.IsSuccess)) return View(cartDto);
-		//
-		// TempData["success"] = "Transaction completed successfully";
-		// return RedirectToAction(nameof(CartIndex));
 	}
 
-	private async Task<CartDto> LoadCartDtoBasedOnLoggedInUser()
-	{
-		// var userId = User.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Sub).FirstOrDefault().Value;
-		var userId = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
-		ResponseDto? responseDto = await _cartService.GetCartByUserIdAsync(userId.Value);
-
-		if (responseDto == null || !responseDto.IsSuccess) return new CartDto();
-
-		CartDto cartDto = JsonConvert.DeserializeObject<CartDto>(Convert.ToString(responseDto.Result));
-		return cartDto;
-	}
 
 	public async Task<IActionResult> Remove(int cartDetailsId)
 	{
 		var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
 		ResponseDto? response = await _cartService.RemoveFromCartAsync(cartDetailsId);
+		if (response != null & response.IsSuccess)
+		{
+			TempData["success"] = "Cart updated successfully";
+			return RedirectToAction(nameof(CartIndex));
+		}
 
-		if (!(response != null & response.IsSuccess)) return View(nameof(CartIndex));
-
-		TempData["success"] = "Cart updated successfully";
-		return RedirectToAction(nameof(CartIndex));
+		// ReSharper disable once Mvc.ViewNotResolved
+		return View();
 	}
 
 	[HttpPost]
 	public async Task<IActionResult> ApplyCoupon(CartDto cartDto)
 	{
 		ResponseDto? response = await _cartService.ApplyCouponAsync(cartDto);
+		if (response != null & response.IsSuccess)
+		{
+			TempData["success"] = "Cart updated successfully";
+			return RedirectToAction(nameof(CartIndex));
+		}
 
-		if (!(response != null & response.IsSuccess)) return View(nameof(CartIndex));
-
-		TempData["success"] = "Cart updated successfully";
-		return RedirectToAction(nameof(CartIndex));
-	}
-
-	[HttpPost]
-	public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
-	{
-		cartDto.CartHeader.CouponCode = string.Empty;
-		ResponseDto? response = await _cartService.ApplyCouponAsync(cartDto);
-
-		if (!(response != null & response.IsSuccess)) return View(nameof(CartIndex));
-
-		TempData["success"] = "Cart updated successfully";
-		return RedirectToAction(nameof(CartIndex));
+		// ReSharper disable once Mvc.ViewNotResolved
+		return View();
 	}
 
 	[HttpPost]
@@ -119,10 +87,42 @@ public class CartController : Controller
 		cart.CartHeader.Email =
 			User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value;
 		ResponseDto? response = await _cartService.EmailCart(cart);
+		if (response != null & response.IsSuccess)
+		{
+			TempData["success"] = "Email will be processed and sent shortly.";
+			return RedirectToAction(nameof(CartIndex));
+		}
 
 		// ReSharper disable once Mvc.ViewNotResolved
-		if (!(response != null & response.IsSuccess)) return View();
-		TempData["success"] = "Email will be processed and sent shortly.";
-		return RedirectToAction(nameof(CartIndex));
+		return View();
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
+	{
+		cartDto.CartHeader.CouponCode = "";
+		ResponseDto? response = await _cartService.ApplyCouponAsync(cartDto);
+		if (response != null & response.IsSuccess)
+		{
+			TempData["success"] = "Cart updated successfully";
+			return RedirectToAction(nameof(CartIndex));
+		}
+
+		// ReSharper disable once Mvc.ViewNotResolved
+		return View();
+	}
+
+
+	private async Task<CartDto> LoadCartDtoBasedOnLoggedInUser()
+	{
+		var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
+		ResponseDto? response = await _cartService.GetCartByUserIdAsync(userId);
+		if (response != null & response.IsSuccess)
+		{
+			CartDto cartDto = JsonConvert.DeserializeObject<CartDto>(Convert.ToString(response.Result));
+			return cartDto;
+		}
+
+		return new CartDto();
 	}
 }
