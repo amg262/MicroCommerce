@@ -12,8 +12,7 @@ public class OrderService : IOrderService
 		_baseService = baseService;
 	}
 
-       
-
+	
 	public async Task<ResponseDto?> CreateOrder(CartDto cartDto)
 	{
 		return await _baseService.SendAsync(new RequestDto()
@@ -21,6 +20,16 @@ public class OrderService : IOrderService
 			ApiType = ApiType.POST,
 			Data = cartDto,
 			Url = SD.OrderAPIBase + "/api/order/CreateOrder"
+		});
+	}
+
+	public async Task<ResponseDto?> CreateStripeSession(StripeRequestDto stripeRequestDto)
+	{
+		return await _baseService.SendAsync(new RequestDto()
+		{
+			ApiType = ApiType.POST,
+			Data = stripeRequestDto,
+			Url = SD.OrderAPIBase + "/api/order/CreateStripeSession"
 		});
 	}
 }

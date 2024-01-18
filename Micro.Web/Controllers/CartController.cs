@@ -30,6 +30,11 @@ public class CartController : Controller
 		return View(await LoadCartDtoBasedOnLoggedInUser());
 	}
 
+	public async Task<IActionResult> Confirmation(int orderId)
+	{
+		return View(orderId);
+	}
+
 	[HttpPost]
 	[ActionName("Checkout")]
 	public async Task<IActionResult> Checkout(CartDto cartDto)
@@ -45,7 +50,21 @@ public class CartController : Controller
 
 		if (response != null && response.IsSuccess)
 		{
+			var domain = $"{Request.Scheme}://{Request.Host.Value}/";
 			//get stripe session and redirect to stripe to place order    
+
+			StripeRequestDto stripeRequestDto = new()
+			{
+				OrderHeader = orderHeaderDto,
+				ApprovedUrl = domain + "Cart/Confirmation?orderId=" + orderHeaderDto.OrderHeaderId,
+				CancelUrl = domain + "Cart/Checkout"
+			};
+
+			var stripeResponse = await _orderService.CreateStripeSession(stripeRequestDto);
+			StripeRequestDto stripeResponseResult =
+				JsonConvert.DeserializeObject<StripeRequestDto>(Convert.ToString(stripeResponse.Result));
+			Response.Headers.Append("Location", stripeResponseResult.StripeSessionUrl);
+			return new StatusCodeResult(303);
 		}
 
 		return View();

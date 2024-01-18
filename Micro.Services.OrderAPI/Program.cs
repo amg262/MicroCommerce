@@ -3,12 +3,13 @@ using Micro.MessageBus;
 using Micro.Services.OrderAPI;
 using Micro.Services.OrderAPI.Data;
 using Micro.Services.OrderAPI.Extensions;
-using Micro.Services.OrderAPI.Service;
 using Micro.Services.OrderAPI.Service.IService;
 using Micro.Services.OrderAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Stripe;
+using ProductService = Micro.Services.OrderAPI.Service.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IMessageBus, MessageBus>();
 
 SD.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
+Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetSection("StripeSettings:SecretKey").Get<string>();
 
 
 builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(SD.ProductAPIBase))
