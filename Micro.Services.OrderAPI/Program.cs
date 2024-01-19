@@ -8,7 +8,6 @@ using Micro.Services.OrderAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Stripe;
 using ProductService = Micro.Services.OrderAPI.Service.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
