@@ -50,7 +50,7 @@ public class CouponAPIController : ControllerBase
 		try
 		{
 			Coupon coupon = _db.Coupons.First(i => i.CouponId == id);
-			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
+			_response.Result = _mapper.Map<CouponDto>(coupon);
 		}
 		catch (Exception e)
 		{
@@ -68,7 +68,7 @@ public class CouponAPIController : ControllerBase
 		try
 		{
 			Coupon coupon = await _db.Coupons.FirstAsync(u => u.CouponCode.ToLower() == code.ToLower());
-			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
+			_response.Result = _mapper.Map<CouponDto>(coupon);
 		}
 		catch (Exception e)
 		{
@@ -85,11 +85,22 @@ public class CouponAPIController : ControllerBase
 	{
 		try
 		{
-			Coupon coupon = _mapper.Map<Coupon>(couponDto); // Map the CouponDto to a Coupon
+			Coupon coupon = _mapper.Map<Coupon>(couponDto);
 			_db.Coupons.Add(coupon);
 			await _db.SaveChangesAsync();
 
-			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
+			// Create the coupon in Stripe
+			var options = new Stripe.CouponCreateOptions
+			{
+				AmountOff = (long) (couponDto.DiscountAmount * 100),
+				Name = couponDto.CouponCode,
+				Currency = "usd",
+				Id = couponDto.CouponCode,
+			};
+			var service = new Stripe.CouponService();
+			await service.CreateAsync(options);
+
+			_response.Result = _mapper.Map<CouponDto>(coupon);
 		}
 		catch (Exception e)
 		{
@@ -106,11 +117,11 @@ public class CouponAPIController : ControllerBase
 	{
 		try
 		{
-			Coupon coupon = _mapper.Map<Coupon>(couponDto); // Map the CouponDto to a Coupon
+			Coupon coupon = _mapper.Map<Coupon>(couponDto);
 			_db.Coupons.Update(coupon);
 			await _db.SaveChangesAsync();
 
-			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
+			_response.Result = _mapper.Map<CouponDto>(coupon);
 		}
 		catch (Exception e)
 		{
@@ -128,11 +139,12 @@ public class CouponAPIController : ControllerBase
 	{
 		try
 		{
-			Coupon coupon = _db.Coupons.First(i => i.CouponId == id); // Map the CouponDto to a Coupon
+			Coupon coupon = _db.Coupons.First(i => i.CouponId == id);
 			_db.Coupons.Remove(coupon);
 			await _db.SaveChangesAsync();
-
-			_response.Result = _mapper.Map<CouponDto>(coupon); // Map the Coupon to a CouponDto
+			var service = new Stripe.CouponService();
+			await service.DeleteAsync(coupon.CouponCode);
+	
 		}
 		catch (Exception e)
 		{
