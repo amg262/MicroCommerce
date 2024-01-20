@@ -11,6 +11,7 @@ public static class SD
 	public const string Status_Completed = "Completed";
 	public const string Status_Refunded = "Refunded";
 	public const string Status_Cancelled = "Cancelled";
+	public const string Status_Succeeded = "Succeeded";
 
 	public static string ProductAPIBase { get; set; }
 	public static string CouponAPIBase { get; set; }

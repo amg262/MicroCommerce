@@ -6,6 +6,7 @@ using Micro.Services.OrderAPI.Service.IService;
 using Micro.Services.OrderAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using Stripe.Checkout;
 
 namespace Micro.Services.OrderAPI.Controllers;
@@ -66,6 +67,15 @@ public class OrderAPIController : ControllerBase
 				CancelUrl = stripeRequestDto.CancelUrl,
 				LineItems = new List<SessionLineItemOptions>(),
 				Mode = "payment",
+				Discounts = new List<SessionDiscountOptions>(),
+			};
+
+			var discounts = new List<SessionDiscountOptions>()
+			{
+				new()
+				{
+					Coupon = stripeRequestDto.OrderHeader.CouponCode
+				}
 			};
 
 			foreach (var item in stripeRequestDto.OrderHeader.OrderDetails)
@@ -87,6 +97,11 @@ public class OrderAPIController : ControllerBase
 				options.LineItems.Add(sessionLineItem);
 			}
 
+			if (stripeRequestDto.OrderHeader.Discount > 0)
+			{
+				options.Discounts = discounts;
+			}
+
 			var service = new SessionService();
 			Session session = await service.CreateAsync(options);
 			stripeRequestDto.StripeSessionUrl = session.Url;
@@ -95,6 +110,39 @@ public class OrderAPIController : ControllerBase
 			orderHeader.StripeSessionId = session.Id;
 			await _db.SaveChangesAsync();
 			_response.Result = stripeRequestDto;
+		}
+		catch (Exception ex)
+		{
+			_response.Message = ex.Message;
+			_response.IsSuccess = false;
+		}
+
+		return _response;
+	}
+
+	[Authorize]
+	[HttpPost("ValidateStripeSession")]
+	public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderId)
+	{
+		try
+		{
+			OrderHeader orderHeader = _db.OrderHeaders.First(u => u.OrderHeaderId == orderHeaderId);
+
+			var service = new SessionService();
+			Session session = await service.GetAsync(orderHeader.StripeSessionId);
+
+			var paymentIntentService = new PaymentIntentService();
+			PaymentIntent paymentIntent = await paymentIntentService.GetAsync(session.PaymentIntentId);
+
+			if (paymentIntent.Status == SD.Status_Succeeded.ToLower())
+			{
+				//then payment was successful
+				orderHeader.PaymentIntentId = paymentIntent.Id;
+				orderHeader.Status = SD.Status_Approved;
+				await _db.SaveChangesAsync();
+
+				_response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
+			}
 		}
 		catch (Exception ex)
 		{
