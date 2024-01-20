@@ -6,6 +6,7 @@ $(document).ready(function () {
 
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
+        order: [[0, 'desc']],
         "ajax": {url: "/order/getall"},
         "columns": [
             {data: 'orderHeaderId', "width": "5%"},
@@ -13,8 +14,13 @@ function loadDataTable() {
             {data: 'name', "width": "20%"},
             {data: 'phone', "width": "10%"},
             {data: 'status', "width": "10%"},
-            {data: 'orderTotal', "width": "10%"},
             {
+                data: 'orderTotal',
+                "width": "10%",
+                "render": function (data) {
+                    return `$${parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+                }
+            }, {
                 data: 'orderHeaderId',
                 "render": function (data) {
                     return `<div class="w-75 btn-group" role="group">
