@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Micro.MessageBus;
 using Micro.Services.OrderAPI.Data;
 using Micro.Services.OrderAPI.Models;
 using Micro.Services.OrderAPI.Models.Dto;
@@ -19,14 +20,18 @@ public class OrderAPIController : ControllerBase
 	private IMapper _mapper;
 	private readonly AppDbContext _db;
 	private IProductService _productService;
+	private readonly IConfiguration _configuration;
+	private readonly IMessageBus _messageBus;
 
-	public OrderAPIController(AppDbContext db,
-		IProductService productService, IMapper mapper)
+	public OrderAPIController(AppDbContext db, IProductService productService, IMapper mapper,
+		IConfiguration configuration, IMessageBus messageBus)
 	{
 		_db = db;
 		this._response = new ResponseDto();
 		_productService = productService;
 		_mapper = mapper;
+		_configuration = configuration;
+		_messageBus = messageBus;
 	}
 
 	[Authorize]
@@ -140,6 +145,16 @@ public class OrderAPIController : ControllerBase
 				orderHeader.PaymentIntentId = paymentIntent.Id;
 				orderHeader.Status = SD.Status_Approved;
 				await _db.SaveChangesAsync();
+
+				RewardsDto rewardsDto = new()
+				{
+					OrderId = orderHeader.OrderHeaderId,
+					RewardsActivity = Convert.ToInt32(orderHeader.OrderTotal),
+					UserId = orderHeader.UserId
+				};
+				// Sending to Service Bus
+				string topicName = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
+				await _messageBus.PublishMessage(rewardsDto, topicName);
 
 				_response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
 			}
