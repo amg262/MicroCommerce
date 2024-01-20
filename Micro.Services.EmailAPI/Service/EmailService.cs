@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Micro.Services.EmailAPI.Data;
+using Micro.Services.EmailAPI.Message;
 using Micro.Services.EmailAPI.Models;
 using Micro.Services.EmailAPI.Models.Dto;
 using Micro.Services.EmailAPI.Utility;
@@ -41,6 +42,12 @@ public class EmailService : IEmailService
 	{
 		string message = "User Registration Successful. <br/> Email : " + email;
 		await LogAndEmail(message, SD.EmailAdmin);
+	}
+
+	public async Task LogOrderPlaced(RewardsMessage rewardsDto)
+	{
+		string message = "New Order Placed. <br/> Order ID : " + rewardsDto.OrderId;
+		await LogAndEmail(message, "agunn@ellsworth.com");
 	}
 
 	private async Task<bool> LogAndEmail(string message, string email)
