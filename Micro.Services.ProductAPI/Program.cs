@@ -86,6 +86,7 @@ app.MapAppHealthChecks();
 app.UseHttpsRedirection();
 app.UseCors("Open");
 app.UseAuthentication();
+app.UseStaticFiles(); // For images in wwwroot folder
 app.UseAuthorization();
 app.MapControllers();
 ApplyMigration();

@@ -41,8 +41,16 @@ public class BaseService : IBaseService
 			HttpClient client = _clientFactory.CreateClient("MicroAPI");
 			HttpRequestMessage message = new HttpRequestMessage();
 
-			// Add headers to the HTTP request message
-			message.Headers.Add("Accept", "application/json");
+			// Set the Accept header based on the ContentType defined in the request DTO
+			if (requestDto.ContentType == ContentType.MultipartFormData)
+			{
+				// Add support for multipart/form-data for file uploads
+				message.Headers.Add("Accept", "*/*");
+			}
+			else
+			{
+				message.Headers.Add("Accept", "application/json");
+			}
 
 			// Include bearer token in the request if required
 			if (withBearer)
@@ -53,11 +61,40 @@ public class BaseService : IBaseService
 
 			// Set the request URI and content
 			message.RequestUri = new Uri(requestDto.Url);
-			if (requestDto.Data != null)
+
+			if (requestDto.ContentType == ContentType.MultipartFormData)
 			{
-				message.Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8,
-					"application/json");
+				var content = new MultipartFormDataContent();
+
+				foreach (var prop in requestDto.Data.GetType().GetProperties())
+				{
+					var value = prop.GetValue(requestDto.Data);
+					if (value is FormFile)
+					{
+						var file = (FormFile) value;
+						if (file != null)
+						{
+							content.Add(new StreamContent(file.OpenReadStream()), prop.Name, file.FileName);
+						}
+					}
+					else
+					{
+						content.Add(new StringContent(value == null ? "" : value.ToString()), prop.Name);
+					}
+				}
+
+				message.Content = content;
 			}
+			else
+			{
+				if (requestDto.Data != null)
+				{
+					message.Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8,
+						"application/json");
+				}
+			}
+
+			HttpResponseMessage? apiResponse = null;
 
 			// Set the HttpMethod based on the ApiType defined in the request DTO
 			message.Method = requestDto.ApiType switch
@@ -69,7 +106,7 @@ public class BaseService : IBaseService
 			};
 
 			// Send the HTTP request asynchronously
-			var apiResponse = await client.SendAsync(message);
+			apiResponse = await client.SendAsync(message);
 
 			// Handle different HTTP status codes
 			switch (apiResponse.StatusCode)
