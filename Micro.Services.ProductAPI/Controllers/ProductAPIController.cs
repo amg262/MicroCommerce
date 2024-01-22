@@ -116,11 +116,36 @@ public class ProductAPIController : ControllerBase
 
 	[HttpPut]
 	[Authorize(Roles = SD.RoleAdmin)]
-	public async Task<ResponseDto> Put([FromBody] ProductDto productDto)
+	public async Task<ResponseDto> Put(ProductDto productDto)
 	{
 		try
 		{
 			Product product = _mapper.Map<Product>(productDto); // Map the ProductDto to a Product
+			
+			if (productDto.Image != null)
+			{
+				if (!string.IsNullOrEmpty(product.ImageLocalPath))
+				{
+					var oldFilePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), product.ImageLocalPath);
+					FileInfo file = new FileInfo(oldFilePathDirectory);
+					if (file.Exists)
+					{
+						file.Delete();
+					}
+				}
+
+				string fileName = product.ProductId + Path.GetExtension(productDto.Image.FileName);
+				string filePath = @"wwwroot\ProductImages\" + fileName;
+				var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
+				await using (var fileStream = new FileStream(filePathDirectory, FileMode.Create))
+				{
+					await productDto.Image.CopyToAsync(fileStream);
+				}
+				var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+				product.ImageUrl = baseUrl + "/ProductImages/" + fileName;
+				product.ImageLocalPath = filePath;
+			}
+			
 			_db.Products.Update(product);
 			await _db.SaveChangesAsync();
 
