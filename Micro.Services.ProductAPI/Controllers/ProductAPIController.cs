@@ -143,6 +143,17 @@ public class ProductAPIController : ControllerBase
 		try
 		{
 			var product = _db.Products.FirstOrDefault(i => i.ProductId == id); // Map the ProductDto to a Product
+
+			if (!string.IsNullOrEmpty(product.ImageLocalPath))
+			{
+				var oldFilePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), product.ImageLocalPath);
+				FileInfo file = new FileInfo(oldFilePathDirectory);
+				if (file.Exists)
+				{
+					file.Delete();
+				}
+			}
+
 			_db.Products.Remove(product);
 			await _db.SaveChangesAsync();
 
