@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Micro.Web.Utility;
 
 namespace Micro.Web.Models;
 
@@ -12,5 +13,8 @@ public class ProductDto
 	public string? ImageUrl { get; set; }
 	public string? ImageLocalPath { get; set; } // For local storage path used in update
 	[Range(1, 100)] public int Count { get; set; } = 1;
+
+	[MaxFileSize(1)]
+	[AllowedExtensions(new string[] {".jpg", ".png"})]
 	public IFormFile? Image { get; set; }
 }
