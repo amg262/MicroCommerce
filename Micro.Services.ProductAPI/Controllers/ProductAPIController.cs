@@ -64,17 +64,17 @@ public class ProductAPIController : ControllerBase
 
 	[HttpPost]
 	[Authorize(Roles = SD.RoleAdmin)]
-	public ResponseDto Post(ProductDto ProductDto)
+	public async Task<ResponseDto> Post([FromForm] ProductDto productDto)
 	{
 		try
 		{
-			Product product = _mapper.Map<Product>(ProductDto);
+			Product product = _mapper.Map<Product>(productDto);
 			_db.Products.Add(product);
-			_db.SaveChanges();
+			await _db.SaveChangesAsync();
 
-			if (ProductDto.Image != null)
+			if (productDto.Image != null)
 			{
-				string fileName = product.ProductId + Path.GetExtension(ProductDto.Image.FileName);
+				string fileName = product.ProductId + Path.GetExtension(productDto.Image.FileName);
 				string filePath = @"wwwroot\ProductImages\" + fileName;
 
 				//I have added the if condition to remove the any image with same name if that exist in the folder by any change
@@ -86,9 +86,9 @@ public class ProductAPIController : ControllerBase
 				}
 
 				var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
-				using (var fileStream = new FileStream(filePathDirectory, FileMode.Create))
+				await using (var fileStream = new FileStream(filePathDirectory, FileMode.Create))
 				{
-					ProductDto.Image.CopyTo(fileStream);
+					await productDto.Image.CopyToAsync(fileStream);
 				}
 
 				var baseUrl =
@@ -102,7 +102,7 @@ public class ProductAPIController : ControllerBase
 			}
 
 			_db.Products.Update(product);
-			_db.SaveChanges();
+			await _db.SaveChangesAsync();
 			_response.Result = _mapper.Map<ProductDto>(product);
 		}
 		catch (Exception ex)
@@ -121,7 +121,7 @@ public class ProductAPIController : ControllerBase
 		try
 		{
 			Product product = _mapper.Map<Product>(productDto); // Map the ProductDto to a Product
-			
+
 			if (productDto.Image != null)
 			{
 				if (!string.IsNullOrEmpty(product.ImageLocalPath))
@@ -141,11 +141,13 @@ public class ProductAPIController : ControllerBase
 				{
 					await productDto.Image.CopyToAsync(fileStream);
 				}
-				var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+
+				var baseUrl =
+					$"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
 				product.ImageUrl = baseUrl + "/ProductImages/" + fileName;
 				product.ImageLocalPath = filePath;
 			}
-			
+
 			_db.Products.Update(product);
 			await _db.SaveChangesAsync();
 

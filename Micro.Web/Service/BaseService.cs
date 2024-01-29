@@ -45,7 +45,9 @@ public class BaseService : IBaseService
 			if (requestDto.ContentType == ContentType.MultipartFormData)
 			{
 				// Add support for multipart/form-data for file uploads
-				message.Headers.Add("Accept", "*/*");
+				message.Headers.Add("Accept", "application/json");
+				message.Headers.Add("enctype", "multipart/form-data");
+				// message.Headers.Add("Accept", "*/*");
 			}
 			else
 			{
