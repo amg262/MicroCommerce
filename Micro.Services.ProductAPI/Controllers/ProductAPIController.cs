@@ -116,7 +116,7 @@ public class ProductAPIController : ControllerBase
 
 	[HttpPut]
 	[Authorize(Roles = SD.RoleAdmin)]
-	public async Task<ResponseDto> Put(ProductDto productDto)
+	public async Task<ResponseDto> Put([FromForm] ProductDto productDto)
 	{
 		try
 		{
