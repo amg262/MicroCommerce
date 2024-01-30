@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.Services.OrderAPI", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.Services.RewardsAPI", "Micro.Services.RewardsAPI\Micro.Services.RewardsAPI.csproj", "{630A756C-EF6C-47F5-AEAC-259D45C524E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.GatewaySolution", "Micro.GatewaySolution\Micro.GatewaySolution.csproj", "{C5FD41FC-B19D-4FD8-9A24-D0049F263FA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,7 @@ Global
 		{F52E5698-3C90-44B5-8AA4-F79D735EAA6D} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
 		{CC9B2A01-E9D0-4518-8F0D-50E8C5BB2961} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
 		{630A756C-EF6C-47F5-AEAC-259D45C524E3} = {D77CFEF1-87DA-4623-A3BD-23C37BD34DCA}
+		{C5FD41FC-B19D-4FD8-9A24-D0049F263FA3} = {63E880BA-D4E4-47AA-975B-4DE4088AF836}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F30856D9-F904-4616-9942-B68F663D7E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -79,5 +82,9 @@ Global
 		{630A756C-EF6C-47F5-AEAC-259D45C524E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{630A756C-EF6C-47F5-AEAC-259D45C524E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{630A756C-EF6C-47F5-AEAC-259D45C524E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5FD41FC-B19D-4FD8-9A24-D0049F263FA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5FD41FC-B19D-4FD8-9A24-D0049F263FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5FD41FC-B19D-4FD8-9A24-D0049F263FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5FD41FC-B19D-4FD8-9A24-D0049F263FA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
