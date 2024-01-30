@@ -13,15 +13,6 @@ public class ProductService : IProductService
 		_baseService = baseService;
 	}
 
-	public async Task<ResponseDto?> GetProductAsync(string productCode)
-	{
-		return await _baseService.SendAsync(new RequestDto()
-		{
-			ApiType = ApiType.GET,
-			Url = SD.ProductAPIBase + "/api/product/GetByCode/" + productCode,
-		});
-	}
-
 	public async Task<ResponseDto?> GetAllProductsAsync()
 	{
 		return await _baseService.SendAsync(new RequestDto()
