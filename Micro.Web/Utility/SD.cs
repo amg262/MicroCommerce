@@ -1,6 +1,6 @@
 ﻿namespace Micro.Web.Utility;
 
-public class SD
+public static class SD
 {
 	public static string CouponAPIBase { get; set; }
 	public static string AuthAPIBase { get; set; }

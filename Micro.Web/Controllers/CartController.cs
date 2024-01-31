@@ -8,29 +8,50 @@ using Newtonsoft.Json;
 
 namespace Micro.Web.Controllers;
 
+/// <summary>
+/// Controller responsible for handling cart-related operations such as viewing, modifying, and checking out the cart.
+/// </summary>
 public class CartController : Controller
 {
 	private readonly ICartService _cartService;
 	private readonly IOrderService _orderService;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="CartController"/> class.
+	/// </summary>
+	/// <param name="cartService">Service for handling cart operations.</param>
+	/// <param name="orderService">Service for handling order operations.</param>
 	public CartController(ICartService cartService, IOrderService orderService)
 	{
 		_cartService = cartService;
 		_orderService = orderService;
 	}
 
+	/// <summary>
+	/// Displays the cart index view to the authorized user.
+	/// </summary>
+	/// <returns>A view representing the current state of the user's cart.</returns>
 	[Authorize]
 	public async Task<IActionResult> CartIndex()
 	{
 		return View(await LoadCartDtoBasedOnLoggedInUser());
 	}
 
+	/// <summary>
+	/// Displays the checkout view to the authorized user.
+	/// </summary>
+	/// <returns>A view for checking out the items in the cart.</returns>
 	[Authorize]
 	public async Task<IActionResult> Checkout()
 	{
 		return View(await LoadCartDtoBasedOnLoggedInUser());
 	}
 
+	/// <summary>
+	/// Handles the confirmation of an order.
+	/// </summary>
+	/// <param name="orderId">The ID of the order to confirm.</param>
+	/// <returns>A view indicating the confirmation status of the order.</returns>
 	public async Task<IActionResult> Confirmation(int orderId)
 	{
 		ResponseDto? response = await _orderService.ValidateStripeSession(orderId);
@@ -42,12 +63,16 @@ public class CartController : Controller
 			{
 				return View(orderId);
 			}
-			
 		}
 
 		return View(orderId);
 	}
 
+	/// <summary>
+	/// Processes the checkout operation for the cart.
+	/// </summary>
+	/// <param name="cartDto">The data transfer object representing the cart.</param>
+	/// <returns>A redirect to the Stripe session for payment processing or a view indicating failure.</returns>
 	[HttpPost]
 	[ActionName("Checkout")]
 	public async Task<IActionResult> Checkout(CartDto cartDto)
@@ -83,7 +108,11 @@ public class CartController : Controller
 		return View();
 	}
 
-
+	/// <summary>
+	/// Handles the removal of an item from the cart.
+	/// </summary>
+	/// <param name="cartDetailsId">The ID of the cart detail item to remove.</param>
+	/// <returns>A redirection to the cart index view with a status message.</returns>
 	public async Task<IActionResult> Remove(int cartDetailsId)
 	{
 		var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
@@ -98,6 +127,11 @@ public class CartController : Controller
 		return View();
 	}
 
+	/// <summary>
+	/// Applies a coupon to the user's cart.
+	/// </summary>
+	/// <param name="cartDto">The data transfer object representing the cart to which the coupon is applied.</param>
+	/// <returns>A redirection to the cart index view with a status message.</returns>
 	[HttpPost]
 	public async Task<IActionResult> ApplyCoupon(CartDto cartDto)
 	{
@@ -112,6 +146,11 @@ public class CartController : Controller
 		return View();
 	}
 
+	/// <summary>
+	/// Sends an email representation of the cart to the user's email address.
+	/// </summary>
+	/// <param name="cartDto">The data transfer object representing the cart to email.</param>
+	/// <returns>A redirection to the cart index view with a status message.</returns>
 	[HttpPost]
 	public async Task<IActionResult> EmailCart(CartDto cartDto)
 	{
@@ -129,6 +168,11 @@ public class CartController : Controller
 		return View();
 	}
 
+	/// <summary>
+	/// Removes the applied coupon from the user's cart.
+	/// </summary>
+	/// <param name="cartDto">The data transfer object representing the cart from which the coupon is removed.</param>
+	/// <returns>A redirection to the cart index view with a status message.</returns>
 	[HttpPost]
 	public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
 	{
@@ -144,7 +188,10 @@ public class CartController : Controller
 		return View();
 	}
 
-
+	/// <summary>
+	/// Loads the cart data transfer object based on the currently logged-in user.
+	/// </summary>
+	/// <returns>A <see cref="CartDto"/> object representing the user's cart.</returns>
 	private async Task<CartDto> LoadCartDtoBasedOnLoggedInUser()
 	{
 		var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;

@@ -1,7 +1,8 @@
 ﻿using Micro.Web.Models;
+using Micro.Web.Service.IService;
 using Micro.Web.Utility;
 
-namespace Micro.Web.Service.IService;
+namespace Micro.Web.Service;
 
 public class CouponService : ICouponService
 {

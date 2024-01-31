@@ -7,20 +7,36 @@ using Newtonsoft.Json;
 
 namespace Micro.Web.Controllers;
 
+/// <summary>
+/// Controller responsible for handling order-related requests such as viewing and updating order details.
+/// </summary>
 public class OrderController : Controller
 {
 	private readonly IOrderService _orderService;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OrderController"/> class.
+	/// </summary>
+	/// <param name="orderService">Service for handling order operations.</param>
 	public OrderController(IOrderService orderService)
 	{
 		_orderService = orderService;
 	}
 
+	/// <summary>
+	/// Displays the order index view.
+	/// </summary>
+	/// <returns>The order index view.</returns>
 	public IActionResult OrderIndex()
 	{
 		return View();
 	}
 
+	/// <summary>
+	/// Displays the details of a specific order.
+	/// </summary>
+	/// <param name="orderId">The ID of the order to display.</param>
+	/// <returns>The order detail view for the specified order ID.</returns>
 	[HttpGet]
 	public async Task<IActionResult> OrderDetail(int orderId)
 	{
@@ -41,6 +57,11 @@ public class OrderController : Controller
 		return View(orderHeaderDto);
 	}
 
+	/// <summary>
+	/// Retrieves all orders, optionally filtered by status and/or user ID.
+	/// </summary>
+	/// <param name="status">Optional status to filter orders.</param>
+	/// <returns>A JSON response containing the list of orders.</returns>
 	[HttpGet]
 	public IActionResult GetAll(string? status)
 	{
@@ -79,6 +100,11 @@ public class OrderController : Controller
 		return Json(new {data = list});
 	}
 
+	/// <summary>
+	/// Updates the status of an order to 'Ready for Pickup'.
+	/// </summary>
+	/// <param name="orderId">The ID of the order to update.</param>
+	/// <returns>Redirects to the order detail view if successful; otherwise, returns to the current view with an error.</returns>
 	[HttpPost("OrderReadyForPickup")]
 	public async Task<IActionResult> OrderReadyForPickup(int orderId)
 	{
@@ -93,6 +119,11 @@ public class OrderController : Controller
 		return View();
 	}
 
+	/// <summary>
+	/// Completes an order by updating its status to 'Completed'.
+	/// </summary>
+	/// <param name="orderId">The ID of the order to complete.</param>
+	/// <returns>Redirects to the order detail view if successful; otherwise, returns to the current view with an error.</returns>
 	[HttpPost("CompleteOrder")]
 	public async Task<IActionResult> CompleteOrder(int orderId)
 	{
@@ -107,6 +138,11 @@ public class OrderController : Controller
 		return View();
 	}
 
+	/// <summary>
+	/// Cancels an order by updating its status to 'Cancelled'.
+	/// </summary>
+	/// <param name="orderId">The ID of the order to cancel.</param>
+	/// <returns>Redirects to the order detail view if successful; otherwise, returns to the current view with an error.</returns>
 	[HttpPost("CancelOrder")]
 	public async Task<IActionResult> CancelOrder(int orderId)
 	{

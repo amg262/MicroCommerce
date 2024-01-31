@@ -4,22 +4,36 @@ using Microsoft.JSInterop;
 
 namespace Micro.Web.Service;
 
+/// <summary>
+/// Provides token management services for authentication purposes.
+/// </summary>
 public class TokenProvider : ITokenProvider
 {
 	private readonly IHttpContextAccessor _httpContextAccessor;
-	private readonly IJSRuntime _jsRuntime;
+	// private readonly IJSRuntime _jsRuntime;
 
-	public TokenProvider(IHttpContextAccessor httpContextAccessor, IJSRuntime jsRuntime)
+	/// <summary>
+	/// Initializes a new instance of the <see cref="TokenProvider"/> class.
+	/// </summary>
+	/// <param name="httpContextAccessor">Provides access to the HTTP context.</param>
+	public TokenProvider(IHttpContextAccessor httpContextAccessor)
 	{
 		_httpContextAccessor = httpContextAccessor;
-		_jsRuntime = jsRuntime;
 	}
 
+	/// <summary>
+	/// Sets the authentication token in the HTTP context's cookies.
+	/// </summary>
+	/// <param name="token">The authentication token to be set.</param>
 	public void SetToken(string token)
 	{
 		_httpContextAccessor.HttpContext?.Response.Cookies.Append(SD.TokenCookie, token);
 	}
 
+	/// <summary>
+	/// Retrieves the authentication token from the HTTP context's cookies.
+	/// </summary>
+	/// <returns>The authentication token if available; otherwise, null.</returns>
 	public string? GetToken()
 	{
 		string? token = null;
@@ -27,6 +41,9 @@ public class TokenProvider : ITokenProvider
 		return hasToken == true ? token : null;
 	}
 
+	/// <summary>
+	/// Clears the authentication token from the HTTP context's cookies.
+	/// </summary>
 	public void ClearToken()
 	{
 		_httpContextAccessor.HttpContext?.Response.Cookies.Delete(SD.TokenCookie);

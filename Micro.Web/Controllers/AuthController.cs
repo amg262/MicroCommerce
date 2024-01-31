@@ -11,17 +11,29 @@ using Newtonsoft.Json;
 
 namespace Micro.Web.Controllers;
 
+/// <summary>
+/// Controller responsible for handling authentication-related requests such as login, registration, and logout.
+/// </summary>
 public class AuthController : Controller
 {
 	private readonly IAuthService _authService;
 	private readonly ITokenProvider _tokenProvider;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AuthController"/> class.
+	/// </summary>
+	/// <param name="authService">Service for handling authentication operations.</param>
+	/// <param name="tokenProvider">Service for managing authentication tokens.</param>
 	public AuthController(IAuthService authService, ITokenProvider tokenProvider)
 	{
 		_authService = authService;
 		_tokenProvider = tokenProvider;
 	}
 
+	/// <summary>
+	/// Displays the login view.
+	/// </summary>
+	/// <returns>A view for user login.</returns>
 	[HttpGet]
 	public IActionResult Login()
 	{
@@ -29,6 +41,11 @@ public class AuthController : Controller
 		return View(loginRequestDto);
 	}
 
+	/// <summary>
+	/// Handles the user login request.
+	/// </summary>
+	/// <param name="dto">Data transfer object containing user login information.</param>
+	/// <returns>Redirects to the home page if successful, otherwise stays on the login page with an error message.</returns>
 	[HttpPost]
 	public async Task<IActionResult> Login(LoginRequestDto dto)
 	{
@@ -52,6 +69,10 @@ public class AuthController : Controller
 		}
 	}
 
+	/// <summary>
+	/// Displays the registration view with role options.
+	/// </summary>
+	/// <returns>A view for user registration.</returns>
 	[HttpGet]
 	public IActionResult Register()
 	{
@@ -66,6 +87,11 @@ public class AuthController : Controller
 		return View();
 	}
 
+	/// <summary>
+	/// Handles the user registration request.
+	/// </summary>
+	/// <param name="dto">Data transfer object containing user registration information.</param>
+	/// <returns>Redirects to the login page if successful, otherwise stays on the registration page with an error message.</returns>
 	[HttpPost]
 	public async Task<IActionResult> Register(RegistrationRequestDto dto)
 	{
@@ -102,6 +128,10 @@ public class AuthController : Controller
 		return View(dto);
 	}
 
+	/// <summary>
+	/// Handles the user logout request.
+	/// </summary>
+	/// <returns>Redirects to the home page after logging out.</returns>
 	public async Task<IActionResult> Logout()
 	{
 		await HttpContext.SignOutAsync();
@@ -109,6 +139,10 @@ public class AuthController : Controller
 		return RedirectToAction(nameof(HomeController.Index), "Home");
 	}
 
+	/// <summary>
+	/// Signs in the user by setting up the authentication cookie.
+	/// </summary>
+	/// <param name="loginResponseDto">Data transfer object containing user authentication information.</param>
 	private async Task SignInUser(LoginResponseDto loginResponseDto)
 	{
 		var handler = new JwtSecurityTokenHandler();
