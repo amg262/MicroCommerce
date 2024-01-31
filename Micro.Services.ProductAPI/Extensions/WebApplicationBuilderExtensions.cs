@@ -7,8 +7,16 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Micro.Services.ProductAPI.Extensions;
 
+/// <summary>
+/// Extension methods for <see cref="WebApplicationBuilder"/> to set up health checks and authentication.
+/// </summary>
 public static class WebApplicationBuilderExtensions
 {
+	/// <summary>
+	/// Maps health check endpoints for the web application.
+	/// </summary>
+	/// <param name="app">The <see cref="WebApplication"/> to map health checks to.</param>
+	/// <returns>The modified <see cref="WebApplication"/>.</returns>
 	public static WebApplication MapAppHealthChecks(this WebApplication app)
 	{
 		app.MapHealthChecks("/api/health/ready", new HealthCheckOptions
@@ -43,6 +51,11 @@ public static class WebApplicationBuilderExtensions
 		return app;
 	}
 
+	/// <summary>
+	/// Adds JWT authentication to the application.
+	/// </summary>
+	/// <param name="builder">The <see cref="WebApplicationBuilder"/> to add authentication to.</param>
+	/// <returns>The modified <see cref="WebApplicationBuilder"/>.</returns>
 	public static WebApplicationBuilder AddAppAuthentication(this WebApplicationBuilder builder)
 	{
 		var apiSettings = builder.Configuration.GetSection("ApiSettings");

@@ -1,24 +1,32 @@
 ﻿using AutoMapper;
-using Micro.Services.CouponAPI.Utility;
 using Micro.Services.ProductAPI.Data;
 using Micro.Services.ProductAPI.Models;
 using Micro.Services.ProductAPI.Models.Dto;
+using Micro.Services.ProductAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Micro.Services.ProductAPI.Controllers;
 
+/// <summary>
+/// API controller for managing products. Includes functionality for CRUD operations on products.
+/// </summary>
 [Route("api/product")]
 [ApiController]
+// Uncomment the line below to enable authorization for this controller.
 // [Authorize]
-// ControllerBase is a controller without view support
 public class ProductAPIController : ControllerBase
 {
 	private readonly AppDbContext _db;
 	private ResponseDto _response;
 	private readonly IMapper _mapper;
 
+	/// <summary>
+	/// Constructor for ProductAPIController.
+	/// </summary>
+	/// <param name="db">Database context for accessing product data.</param>
+	/// <param name="mapper">AutoMapper instance to map between DTOs and entities.</param>
 	public ProductAPIController(AppDbContext db, IMapper mapper)
 	{
 		_db = db;
@@ -26,6 +34,10 @@ public class ProductAPIController : ControllerBase
 		_response = new ResponseDto();
 	}
 
+	/// <summary>
+	/// Retrieves all products.
+	/// </summary>
+	/// <returns>A list of all products.</returns>
 	[HttpGet]
 	public async Task<ResponseDto> Get()
 	{
@@ -43,6 +55,11 @@ public class ProductAPIController : ControllerBase
 		return _response;
 	}
 
+	/// <summary>
+	/// Retrieves a specific product by its ID.
+	/// </summary>
+	/// <param name="id">The ID of the product.</param>
+	/// <returns>The requested product.</returns>
 	[HttpGet]
 	[Route("{id:int}")]
 	public async Task<ResponseDto> Get(int id)
@@ -62,8 +79,13 @@ public class ProductAPIController : ControllerBase
 	}
 
 
+	/// <summary>
+	/// Creates a new product.
+	/// </summary>
+	/// <param name="productDto">The product data to create.</param>
+	/// <returns>The result of the creation operation.</returns>
 	[HttpPost]
-	[Authorize(Roles = SD.RoleAdmin)]
+	[Authorize(Roles = SD.RoleAdmin)] // Restrict this action to Admin roles only.
 	public async Task<ResponseDto> Post([FromForm] ProductDto productDto)
 	{
 		try
@@ -114,8 +136,13 @@ public class ProductAPIController : ControllerBase
 		return _response;
 	}
 
+	/// <summary>
+	/// Updates an existing product.
+	/// </summary>
+	/// <param name="productDto">The updated product data.</param>
+	/// <returns>The result of the update operation.</returns>
 	[HttpPut]
-	[Authorize(Roles = SD.RoleAdmin)]
+	[Authorize(Roles = SD.RoleAdmin)] // Restrict this action to Admin roles only.
 	public async Task<ResponseDto> Put([FromForm] ProductDto productDto)
 	{
 		try
@@ -162,9 +189,14 @@ public class ProductAPIController : ControllerBase
 		return _response;
 	}
 
+	/// <summary>
+	/// Deletes a product by its ID.
+	/// </summary>
+	/// <param name="id">The ID of the product to delete.</param>
+	/// <returns>The result of the deletion operation.</returns>
 	[HttpDelete]
 	[Route("{id:int}")]
-	[Authorize(Roles = SD.RoleAdmin)]
+	[Authorize(Roles = SD.RoleAdmin)] // Restrict this action to Admin roles only.
 	public async Task<ResponseDto> Delete(int id)
 	{
 		try

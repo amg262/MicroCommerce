@@ -1,6 +1,6 @@
-﻿namespace Micro.Services.CouponAPI.Utility;
+﻿namespace Micro.Services.ProductAPI.Utility;
 
-public class SD
+public static class SD
 {
 	public const string RoleAdmin = "ADMIN";
 	public const string RoleCustomer = "CUSTOMER";

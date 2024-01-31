@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 
 namespace Micro.Services.RewardsAPI.Messaging;
 
+/// <summary>
+/// Consumes messages from Azure Service Bus and processes them.
+/// </summary>
 public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 {
 	private readonly string serviceBusConnectionString;
@@ -16,13 +19,18 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 
 	private ServiceBusProcessor _rewardProcessor;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AzureServiceBusConsumer"/> class.
+	/// </summary>
+	/// <param name="configuration">Configuration for accessing application settings.</param>
+	/// <param name="rewardService">Service to handle reward logic.</param>
 	public AzureServiceBusConsumer(IConfiguration configuration, RewardService rewardService)
 	{
 		_rewardService = rewardService;
 		_configuration = configuration;
 
+		// Retrieve connection string and topic/subscription names from configuration
 		serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString");
-
 		orderCreatedTopic = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
 		orderCreatedRewardSubscription =
 			_configuration.GetValue<string>("TopicAndQueueNames:OrderCreated_Rewards_Subscription");
@@ -31,6 +39,9 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 		_rewardProcessor = client.CreateProcessor(orderCreatedTopic, orderCreatedRewardSubscription);
 	}
 
+	/// <summary>
+	/// Starts processing messages from the service bus.
+	/// </summary>
 	public async Task Start()
 	{
 		_rewardProcessor.ProcessMessageAsync += OnNewOrderRewardsRequestReceived;
@@ -38,13 +49,20 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 		await _rewardProcessor.StartProcessingAsync();
 	}
 
-
+	/// <summary>
+	/// Stops processing messages and disposes the processor.
+	/// </summary>
 	public async Task Stop()
 	{
 		await _rewardProcessor.StopProcessingAsync();
 		await _rewardProcessor.DisposeAsync();
 	}
 
+	/// <summary>
+	/// Handles the event when a new reward message is received.
+	/// </summary>
+	/// <param name="args">Event arguments containing the service bus message.</param>
+	/// <returns>A task that represents the asynchronous operation.</returns>
 	private async Task OnNewOrderRewardsRequestReceived(ProcessMessageEventArgs args)
 	{
 		//this is where you will receive message

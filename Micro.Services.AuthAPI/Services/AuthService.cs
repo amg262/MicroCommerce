@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Micro.Services.AuthAPI.Services;
 
+/// <summary>
+/// Service responsible for handling authentication-related tasks such as user registration, login, and role assignment.
+/// </summary>
 public class AuthService : IAuthService
 {
 	private readonly AppDbContext _db;
@@ -13,6 +16,13 @@ public class AuthService : IAuthService
 	private readonly RoleManager<IdentityRole> _roleManager;
 	private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AuthService"/> class.
+	/// </summary>
+	/// <param name="db">Database context for the application.</param>
+	/// <param name="userManager">User manager for handling user-related operations.</param>
+	/// <param name="roleManager">Role manager for handling role-related operations.</param>
+	/// <param name="jwtTokenGenerator">JWT token generator for generating authentication tokens.</param>
 	public AuthService(AppDbContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
 		IJwtTokenGenerator jwtTokenGenerator)
 	{
@@ -22,6 +32,11 @@ public class AuthService : IAuthService
 		_jwtTokenGenerator = jwtTokenGenerator;
 	}
 
+	/// <summary>
+	/// Registers a new user with the given registration details.
+	/// </summary>
+	/// <param name="registrationRequestDto">Data transfer object containing registration details.</param>
+	/// <returns>A task that represents the asynchronous operation, returning an error message if registration fails.</returns>
 	public async Task<string> Register(RegistrationRequestDto registrationRequestDto)
 	{
 		ApplicationUser user = new()
@@ -64,6 +79,11 @@ public class AuthService : IAuthService
 		return "Error Occured";
 	}
 
+	/// <summary>
+	/// Authenticates a user and generates a JWT token for valid credentials.
+	/// </summary>
+	/// <param name="loginRequestDto">Data transfer object containing login details.</param>
+	/// <returns>A task that represents the asynchronous operation, returning a LoginResponseDto with user details and token.</returns>
 	public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
 	{
 		var user = _db.ApplicationUsers.FirstOrDefault(u => string.Equals(u.UserName.ToUpper(),
@@ -96,6 +116,12 @@ public class AuthService : IAuthService
 		return loginResponseDto;
 	}
 
+	/// <summary>
+	/// Assigns a role to a user.
+	/// </summary>
+	/// <param name="email">Email of the user to whom the role will be assigned.</param>
+	/// <param name="roleName">The name of the role to assign to the user.</param>
+	/// <returns>A task that represents the asynchronous operation, returning true if the role assignment is successful.</returns>
 	public async Task<bool> AssignRole(string email, string roleName)
 	{
 		var user = _db.ApplicationUsers.FirstOrDefault(u => string.Equals(u.Email.ToUpper(), email.ToUpper()));

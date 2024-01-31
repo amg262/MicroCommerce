@@ -8,15 +8,28 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Micro.Services.AuthAPI.Services;
 
+/// <summary>
+/// Service responsible for generating JWT (JSON Web Token) for user authentication.
+/// </summary>
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
 	private readonly JwtOptions _jwtOptions;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="JwtTokenGenerator"/> class.
+	/// </summary>
+	/// <param name="jwtOptions">Configuration options for JWT.</param>
 	public JwtTokenGenerator(IOptions<JwtOptions> jwtOptions)
 	{
 		_jwtOptions = jwtOptions.Value;
 	}
 
+	/// <summary>
+	/// Generates a JWT token for a given application user and their roles.
+	/// </summary>
+	/// <param name="applicationUser">The user for whom the token is being generated.</param>
+	/// <param name="roles">The roles of the user to be included in the token.</param>
+	/// <returns>A JWT token string.</returns>
 	public string GenerateToken(ApplicationUser applicationUser, IEnumerable<string> roles)
 	{
 		var tokenHandler = new JwtSecurityTokenHandler();
@@ -27,12 +40,13 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 		{
 			new(JwtRegisteredClaimNames.Email, applicationUser.Email),
 			new(JwtRegisteredClaimNames.Name, applicationUser.UserName),
-			// Sub for Subject -> ID of the user
+			// Sub (Subject) claim is used to store the user's ID.
 			new(JwtRegisteredClaimNames.Sub, applicationUser.Id),
 		};
-
+		// Adding role claims to the list of claims.
 		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
+		// Preparing the security token descriptor with issuer, audience, subject, expiration, and signing credentials.
 		var tokenDescriptor = new SecurityTokenDescriptor()
 		{
 			Audience = _jwtOptions.Audience,
@@ -45,14 +59,14 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
 		try
 		{
+			// Generating the token using the token handler and descriptor.
 			var token = tokenHandler.CreateToken(tokenDescriptor);
 			return tokenHandler.WriteToken(token);
-
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			Console.WriteLine(e);
 			throw;
 		}
-		
 	}
 }

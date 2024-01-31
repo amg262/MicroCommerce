@@ -13,6 +13,9 @@ using Stripe.Checkout;
 
 namespace Micro.Services.OrderAPI.Controllers;
 
+/// <summary>
+/// API Controller for handling order-related operations such as retrieving, creating, updating, and validating orders.
+/// </summary>
 [Route("api/order")]
 [ApiController]
 public class OrderAPIController : ControllerBase
@@ -24,6 +27,14 @@ public class OrderAPIController : ControllerBase
 	private readonly IConfiguration _configuration;
 	private readonly IMessageBus _messageBus;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OrderAPIController"/> class.
+	/// </summary>
+	/// <param name="db">Database context for accessing order data.</param>
+	/// <param name="productService">Service for handling product-related operations.</param>
+	/// <param name="mapper">AutoMapper for object-object mapping.</param>
+	/// <param name="configuration">Configuration for accessing application settings.</param>
+	/// <param name="messageBus">Message bus for publishing messages.</param>
 	public OrderAPIController(AppDbContext db, IProductService productService, IMapper mapper,
 		IConfiguration configuration, IMessageBus messageBus)
 	{
@@ -35,6 +46,11 @@ public class OrderAPIController : ControllerBase
 		_messageBus = messageBus;
 	}
 
+	/// <summary>
+	/// Retrieves orders for a specific user or all orders if requested by an admin.
+	/// </summary>
+	/// <param name="userId">Optional user ID for filtering orders. If empty and requested by an admin, all orders are retrieved.</param>
+	/// <returns>A response DTO containing a list of orders.</returns>
 	[Authorize]
 	[HttpGet("GetOrders")]
 	public ResponseDto? Get(string? userId = "")
@@ -64,6 +80,11 @@ public class OrderAPIController : ControllerBase
 		return _response;
 	}
 
+	/// <summary>
+	/// Retrieves a specific order by its ID.
+	/// </summary>
+	/// <param name="id">The ID of the order to retrieve.</param>
+	/// <returns>A response DTO containing the order details.</returns>
 	[Authorize]
 	[HttpGet("GetOrder/{id:int}")]
 	public ResponseDto? Get(int id)
@@ -82,6 +103,11 @@ public class OrderAPIController : ControllerBase
 		return _response;
 	}
 
+	/// <summary>
+	/// Creates a new order based on the provided cart data.
+	/// </summary>
+	/// <param name="cartDto">Data transfer object containing cart details.</param>
+	/// <returns>A response DTO indicating the result of the order creation.</returns>
 	[Authorize]
 	[HttpPost("CreateOrder")]
 	public async Task<ResponseDto> CreateOrder([FromBody] CartDto cartDto)
@@ -108,6 +134,12 @@ public class OrderAPIController : ControllerBase
 		return _response;
 	}
 
+	/// <summary>
+	/// Updates the status of an existing order.
+	/// </summary>
+	/// <param name="orderId">The ID of the order to update.</param>
+	/// <param name="newStatus">The new status for the order.</param>
+	/// <returns>A response DTO indicating the result of the update operation.</returns>
 	[Authorize]
 	[HttpPost("UpdateOrderStatus/{orderId:int}")]
 	public async Task<ResponseDto> UpdateOrderStatus(int orderId, [FromBody] string newStatus)
@@ -142,6 +174,11 @@ public class OrderAPIController : ControllerBase
 		return _response;
 	}
 
+	/// <summary>
+	/// Creates a Stripe session for processing payment.
+	/// </summary>
+	/// <param name="stripeRequestDto">Data transfer object containing Stripe request details.</param>
+	/// <returns>A response DTO with Stripe session details.</returns>
 	[Authorize]
 	[HttpPost("CreateStripeSession")]
 	public async Task<ResponseDto> CreateStripeSession([FromBody] StripeRequestDto stripeRequestDto)
@@ -207,6 +244,11 @@ public class OrderAPIController : ControllerBase
 		return _response;
 	}
 
+	/// <summary>
+	/// Validates the Stripe session for an order.
+	/// </summary>
+	/// <param name="orderHeaderId">The ID of the order header for Stripe session validation.</param>
+	/// <returns>A response DTO indicating whether the Stripe session is validated.</returns>
 	[Authorize]
 	[HttpPost("ValidateStripeSession")]
 	public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderId)
