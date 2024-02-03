@@ -1,6 +1,7 @@
 ﻿using Micro.Web.Models;
 using Micro.Web.Service.IService;
 using Micro.Web.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Newtonsoft.Json;
@@ -27,6 +28,7 @@ public class OrderController : Controller
 	/// Displays the order index view.
 	/// </summary>
 	/// <returns>The order index view.</returns>
+	[Authorize]
 	public IActionResult OrderIndex()
 	{
 		return View();
