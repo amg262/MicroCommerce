@@ -87,13 +87,12 @@ builder.AddAppAuthentication();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
-	app.UseDeveloperExceptionPage();
-}
+	c.SwaggerEndpoint("swagger/v1/swagger.json", "Order API");
+	c.RoutePrefix = string.Empty;
+});
 
 // Use extension method to map health checks
 app.MapAppHealthChecks();

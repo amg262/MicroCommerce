@@ -98,6 +98,13 @@ This project handles messaging between services in the solution. It uses librari
 - Azure.Messaging.ServiceBus 7.17.1
 - Newtonsoft.Json 13.0.3
 
+### RabbitMQ
+
+Run it in a Docker container using the following command:
+```csharp
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.12-management
+```
+
 ## Tools
 
 The solution is developed using JetBrains Rider 2023.3.3 IDE and is intended to be run on a Windows operating system. Docker is also used, with a default target OS of Linux.
